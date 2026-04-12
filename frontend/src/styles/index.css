@@ -1,0 +1,24 @@
+:root {
+  --violeta: #6a1b9a;
+  --violeta-hover: #4a148c;
+}
+
+body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+.brand-text { font-family: 'Playfair Display', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+.hero-section {
+  min-height: 450px;
+  background: linear-gradient(rgba(106, 27, 154, 0.5), rgba(106, 27, 154, 0.5)), 
+              url('/imagenes/foto_portada.png') center/cover no-repeat;
+}
+
+.bg-violeta { background-color: var(--violeta); }
+.btn-violeta { background-color: var(--violeta); color: white; transition: 0.3s; }
+.btn-violeta:hover { background-color: var(--violeta-hover); color: white; transform: translateY(-2px); }
+
+.btn-violeta-outline { border: 2px solid var(--violeta); color: var(--violeta); font-weight: 600; transition: 0.3s; }
+.btn-violeta-outline:hover { background-color: var(--violeta); color: white; }
+
+.card-producto { transition: transform 0.3s, box-shadow 0.3s; }
+.card-producto:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+.titulo-seccion { color: var(--violeta); font-weight: 700; position: relative; }

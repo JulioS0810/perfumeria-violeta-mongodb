@@ -1,0 +1,17 @@
+:root {
+    /* Paleta de Colores Corporativa */
+    --violeta-principal: #6a1b9a;
+    --violeta-claro: #9c4dcc;
+    --dorado-violeta: #d4af37;
+    --blanco-fondo: #f8f9fa;
+    --gris-texto: #333333;
+    --gris-suave: #888888;
+    
+    /* Tipografía */
+    --fuente-titulo: 'Playfair Display', serif;
+    --fuente-cuerpo: 'Poppins', sans-serif;
+    
+    /* Efectos y Transiciones */
+    --sombra-card: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --transicion: all 0.3s ease;
+}

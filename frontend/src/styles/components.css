@@ -1,0 +1,76 @@
+/* Tarjeta de Producto (Card) */
+.card-producto {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--sombra-card);
+    transition: var(--transicion);
+    overflow: hidden;
+    background: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-producto:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(106, 27, 154, 0.2);
+}
+
+.img-producto {
+    height: 250px;
+    object-fit: contain;
+    padding: 20px;
+    width: 100%;
+    background-color: #fff;
+}
+
+.card-body-personalizado {
+    padding: 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.nombre-producto {
+    font-family: var(--fuente-titulo);
+    font-size: 1.2rem;
+    color: var(--gris-texto);
+    margin-bottom: 0.5rem;
+}
+
+.precio-producto {
+    color: var(--violeta-principal);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* Botón de Acción */
+.btn-violeta {
+    background-color: var(--violeta-principal);
+    color: white;
+    border-radius: 25px;
+    padding: 10px 20px;
+    border: none;
+    width: 100%;
+    font-weight: 600;
+    transition: var(--transicion);
+}
+
+.btn-violeta:hover {
+    background-color: var(--violeta-claro);
+    color: white;
+}
+
+/* Badge del Carrito */
+.carrito-contador {
+    background-color: var(--dorado-violeta);
+    color: var(--gris-texto);
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    border: 2px solid white;
+}
