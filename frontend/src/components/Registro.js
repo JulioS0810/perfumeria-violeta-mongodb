@@ -1,199 +1,115 @@
 // ==========================================
 // COMPONENTE: Registro.js
-// Propósito: Interfaz de usuario para capturar y enviar 
-// datos de nuevos usuarios a MongoDB.
+// Propósito: CRUD de Usuarios (Crear, Leer, Eliminar)
 // ==========================================
 
-import React, { useState } from 'react';
-import Swal from 'sweetalert2'; // Importación de la librería para alertas visuales
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const Registro = () => {
-    // 1. Definición del estado del formulario
-    const [usuario, setUsuario] = useState({
-        nombre: '',
-        email: '',
-        password: ''
-    });
+    const [usuario, setUsuario] = useState({ nombre: '', email: '', password: '' });
+    const [listaUsuarios, setListaUsuarios] = useState([]);
 
-    // 2. Función para capturar los cambios en los campos de texto
-    const handleChange = (e) => {
-        setUsuario({
-            ...usuario,
-            [e.target.name]: e.target.value
-        });
+    // Cargar la lista al entrar
+    useEffect(() => { obtenerUsuarios(); }, []);
+
+    const obtenerUsuarios = async () => {
+        try {
+            const res = await fetch('http://localhost:4000/api/usuarios');
+            const data = await res.json();
+            setListaUsuarios(data);
+        } catch (error) { console.error("Error al listar", error); }
     };
 
-    // 3. Función principal para procesar el envío del formulario
+    const handleChange = (e) => {
+        setUsuario({ ...usuario, [e.target.name]: e.target.value });
+    };
+
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Previene la recarga de la página
-
-        // Validación simple en el Frontend antes de enviar
-        if (usuario.nombre.trim() === '' || usuario.email.trim() === '' || usuario.password.trim() === '') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Campos incompletos',
-                text: 'Por favor, llena todos los campos para continuar.',
-                confirmButtonColor: '#6a1b9a'
-            });
-            return;
-        }
-
+        e.preventDefault();
         try {
-            // Llamada al Backend (Asegúrate de que el servidor Node.js esté activo)
-            const respuesta = await fetch('http://localhost:4000/api/usuarios', {
+            const res = await fetch('http://localhost:4000/api/usuarios', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(usuario)
             });
-
-            const resultado = await respuesta.json();
-
-            if (respuesta.ok) {
-                // ÉXITO: El usuario se guardó en MongoDB
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Registro Exitoso!',
-                    text: `El usuario ${usuario.nombre} ha sido creado correctamente en la base de datos.`,
-                    confirmButtonColor: '#4a148c'
-                });
-
-                // Limpiar el formulario para un nuevo registro
+            if (res.ok) {
+                Swal.fire('¡Éxito!', 'Usuario registrado correctamente', 'success');
                 setUsuario({ nombre: '', email: '', password: '' });
-
-                // Aquí es donde puedes ir a MongoDB Compass y darle a "Refresh"
-                console.log("Dato guardado en MongoDB:", resultado);
-
-            } else {
-                // ERROR: Por ejemplo, si el correo ya existe
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al registrar',
-                    text: resultado.msg || 'No se pudo completar la acción',
-                    confirmButtonColor: '#d33'
-                });
+                obtenerUsuarios(); // Actualiza la tabla automáticamente
             }
+        } catch (error) { Swal.fire('Error', 'No se pudo conectar al backend', 'error'); }
+    };
 
-        } catch (error) {
-            // ERROR DE CONEXIÓN: El backend no responde
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de servidor',
-                text: 'No hay conexión con el backend. Verifica que Node.js esté corriendo.',
-                confirmButtonColor: '#d33'
-            });
+    const eliminarUser = async (id) => {
+        const confirmar = await Swal.fire({
+            title: '¿Eliminar usuario?',
+            text: "Se borrará de MongoDB permanentemente",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            confirmButtonColor: '#d33'
+        });
+
+        if (confirmar.isConfirmed) {
+            try {
+                await fetch(`http://localhost:4000/api/usuarios/${id}`, { method: 'DELETE' });
+                Swal.fire('Eliminado', 'Registro borrado', 'success');
+                obtenerUsuarios();
+            } catch (error) { Swal.fire('Error', 'No se pudo eliminar', 'error'); }
         }
     };
 
-    // 4. Renderizado del formulario (Interfaz)
     return (
-        <div className="contenedor-registro" style={estilos.contenedor}>
-            <div style={estilos.tarjeta}>
-                <h2 style={estilos.titulo}>Registro de Usuario</h2>
-                <p style={estilos.subtitulo}>Sistema de Gestión - Perfumería Violeta</p>
-
-                <form onSubmit={handleSubmit} style={estilos.formulario}>
-                    <div style={estilos.campo}>
-                        <label>Nombre:</label>
-                        <input
-                            type="text"
-                            name="nombre"
-                            placeholder="Ingresa tu nombre"
-                            value={usuario.nombre}
-                            onChange={handleChange}
-                            style={estilos.input}
-                        />
+        <div className="container mt-5" style={{ minHeight: '70vh' }}>
+            <div className="row g-4">
+                {/* FORMULARIO */}
+                <div className="col-md-4">
+                    <div className="card shadow border-0 p-4 rounded-4">
+                        <h3 className="text-center mb-4" style={{color: '#4a148c'}}>Registro</h3>
+                        <form onSubmit={handleSubmit}>
+                            <input type="text" name="nombre" className="form-control mb-3" placeholder="Nombre" value={usuario.nombre} onChange={handleChange} required />
+                            <input type="email" name="email" className="form-control mb-3" placeholder="Email" value={usuario.email} onChange={handleChange} required />
+                            <input type="password" name="password" className="form-control mb-3" placeholder="Contraseña" value={usuario.password} onChange={handleChange} required />
+                            <button type="submit" className="btn btn-lg w-100 text-white" style={{backgroundColor: '#6a1b9a'}}>Guardar</button>
+                        </form>
                     </div>
+                </div>
 
-                    <div style={estilos.campo}>
-                        <label>Correo:</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="ejemplo@correo.com"
-                            value={usuario.email}
-                            onChange={handleChange}
-                            style={estilos.input}
-                        />
+                {/* TABLA DE GESTIÓN */}
+                <div className="col-md-8">
+                    <div className="card shadow border-0 p-4 rounded-4">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h3 style={{color: '#4a148c'}}>Usuarios en DB</h3>
+                            <button onClick={obtenerUsuarios} className="btn btn-outline-primary btn-sm">Actualizar</button>
+                        </div>
+                        <div className="table-responsive">
+                            <table className="table table-hover">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th className="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listaUsuarios.map(u => (
+                                        <tr key={u._id}>
+                                            <td className="fw-bold">{u.nombre}</td>
+                                            <td>{u.email}</td>
+                                            <td className="text-center">
+                                                <button onClick={() => eliminarUser(u._id)} className="btn btn-danger btn-sm">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
-                    <div style={estilos.campo}>
-                        <label>Contraseña:</label>
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Crea una clave segura"
-                            value={usuario.password}
-                            onChange={handleChange}
-                            style={estilos.input}
-                        />
-                    </div>
-
-                    <button type="submit" style={estilos.boton}>
-                        Guardar en MongoDB
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     );
-};
-
-// 5. Estilos en línea para una presentación rápida y limpia
-const estilos = {
-    contenedor: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f5f5f5'
-    },
-    tarjeta: {
-        background: 'white',
-        padding: '30px',
-        borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-    },
-    titulo: {
-        textAlign: 'center',
-        color: '#4a148c',
-        marginBottom: '10px'
-    },
-    subtitulo: {
-        textAlign: 'center',
-        color: '#666',
-        fontSize: '0.9rem',
-        marginBottom: '25px'
-    },
-    formulario: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px'
-    },
-    campo: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '5px'
-    },
-    input: {
-        padding: '10px',
-        borderRadius: '6px',
-        border: '1px solid #ddd',
-        fontSize: '1rem'
-    },
-    boton: {
-        backgroundColor: '#6a1b9a',
-        color: 'white',
-        padding: '12px',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        marginTop: '10px'
-    }
 };
 
 export default Registro;

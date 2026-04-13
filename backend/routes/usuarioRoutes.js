@@ -1,11 +1,12 @@
 // ==========================================
-// RUTAS DE USUARIOS
+// RUTAS DE USUARIOS - PERFUMERÍA VIOLETA
 // Definición de Endpoints para la Gestión de Usuarios
 // ==========================================
+
 const express = require('express');
 const router = express.Router();
 
-// Importamos el controlador que contiene la lógica de persistencia en MongoDB
+// Importamos el controlador con la lógica de negocio y persistencia
 const usuarioController = require('../controllers/usuarioController');
 
 // ==========================================
@@ -13,8 +14,8 @@ const usuarioController = require('../controllers/usuarioController');
 // ==========================================
 /**
  * @route   GET /api/usuarios
- * @desc    Obtiene la lista de usuarios registrados.
- * Nota: La seguridad de excluir el password se maneja en el modelo/controlador.
+ * @desc    Obtiene la lista de usuarios registrados en MongoDB.
+ * @access  Público (por ahora)
  */
 router.get('/', usuarioController.obtenerUsuarios);
 
@@ -23,23 +24,20 @@ router.get('/', usuarioController.obtenerUsuarios);
 // ==========================================
 /**
  * @route   POST /api/usuarios
- * @desc    Recibe los datos del frontend/Postman y los guarda en la base de datos NoSQL.
+ * @desc    Recibe datos del Frontend (React) y los guarda en la base de datos.
+ * @access  Público
  */
 router.post('/', usuarioController.crearUsuario);
 
 // ==========================================
-// 3. RUTA: ELIMINAR USUARIO (DELETE)
+// 3. RUTA: ELIMINAR USUARIO POR ID (DELETE)
 // ==========================================
 /**
  * @route   DELETE /api/usuarios/:id
- * @desc    Elimina un documento de la colección basándose en su _id de MongoDB.
+ * @desc    Elimina un documento de la colección basándose en su ID único.
+ * @access  Privado/Administrador
  */
-// Validación de seguridad para asegurar que la función existe en el controlador
-if (usuarioController.eliminarUsuario) {
-    router.delete('/:id', usuarioController.eliminarUsuario);
-} else {
-    // Mensaje preventivo en consola para el desarrollador
-    console.warn("⚠️ Advertencia: La función eliminarUsuario no está definida en usuarioController.js");
-}
+router.delete('/:id', usuarioController.eliminarUsuario);
 
+// Exportamos el router para que sea utilizado en index.js
 module.exports = router;
