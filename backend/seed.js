@@ -1,8 +1,16 @@
+// ==========================================
+// SCRIPT DE SEMILLADO (SEEDER) - PERFUMERÍA VIOLETA
+// Propósito: Automatizar la carga masiva de productos en MongoDB
+// ==========================================
+
 require('dotenv').config();
 const mongoose = require('mongoose');
 const conectarDB = require('./config/db');
 const Producto = require('./models/Producto');
 
+// ==========================================
+// 1. BASE DE DATOS DE PRODUCTOS (LISTADO)
+// ==========================================
 const perfumes = [
     "212 Heroes Forever Young Carolina Herrera", "212 NYC Carolina Herrera", "212 Sexy Carolina Herrera", "212 Vip Rose Carolina Herrera", "212 Vip Carolina Herrera",
     "3 am Sean John", "9 am Dive Afnan", "9 am Pour Femme Afnan", "9 pm Afnan", "9 pm Pour Femme Afnan",
@@ -36,6 +44,11 @@ const perfumes = [
     "Y Le Parfum Yves Saint Laurent", "Y Live Yves Saint Laurent", "Yara Lattafa", "Yum Yum Armaf"
 ];
 
+// ==========================================
+// 2. LÓGICA DE PROCESAMIENTO (HELPERS)
+// ==========================================
+
+// Extrae la marca analizando patrones en el nombre del perfume
 const obtenerMarca = (nombre) => {
     if (nombre.includes("Christian Dior")) return "Christian Dior";
     if (nombre.includes("Carolina Herrera")) return "Carolina Herrera";
@@ -53,10 +66,11 @@ const obtenerMarca = (nombre) => {
     if (nombre.includes("Nautica")) return "Nautica";
     if (nombre.includes("Tom Ford")) return "Tom Ford";
     
-    // Para marcas de una sola palabra al final
+    // Fallback: Si no coincide, asume que la marca es la última palabra
     return nombre.split(' ').pop();
 };
 
+// Determina el género basándose en palabras clave del nombre
 const determinarGenero = (nombre) => {
     const femininos = [
         'Woman', 'Rose', 'Femme', 'Girl', 'Miss', 'La Belle', 'Si ', 'Joy', 
@@ -66,18 +80,23 @@ const determinarGenero = (nombre) => {
     return femininos.some(p => nombre.includes(p)) ? 'Mujer' : 'Hombre';
 };
 
+// ==========================================
+// 3. FUNCIÓN PRINCIPAL DE IMPORTACIÓN
+// ==========================================
 const importarDatos = async () => {
     try {
-        console.log('🔗 Conectando a MongoDB...');
+        console.log('🔗 Iniciando conexión a MongoDB...');
         await conectarDB();
         
-        console.log('🧹 Limpiando base de datos...');
+        // Limpieza de datos previos para evitar duplicados en cada ejecución
+        console.log('🧹 Limpiando colección de productos...');
         await Producto.deleteMany({}); 
 
-        console.log('🚀 Procesando 132 productos...');
+        console.log('🚀 Procesando información de 132 fragancias...');
         const productosProcesados = perfumes.map(nombre => ({
             nombre: nombre,
             marca: obtenerMarca(nombre),
+            // Genera un precio aleatorio entre 200.000 y 600.000 para las pruebas
             precio: Math.floor(Math.random() * (600000 - 200000)) + 200000,
             descripcion: `Fragancia premium de la línea ${nombre}.`,
             genero: determinarGenero(nombre),
@@ -86,16 +105,19 @@ const importarDatos = async () => {
             stock: 15
         }));
 
+        // Inserción masiva en la base de datos
         await Producto.insertMany(productosProcesados);
-        console.log(`✅ ¡Éxito! ${productosProcesados.length} perfumes cargados correctamente.`);
+        console.log(`✅ ¡Éxito! Se han cargado ${productosProcesados.length} perfumes correctamente.`);
         
+        // Cierre de seguridad de la conexión
         await mongoose.connection.close();
         process.exit(0);
 
     } catch (error) {
-        console.error('❌ Error al cargar datos:', error);
+        console.error('❌ Error crítico al cargar datos:', error);
         process.exit(1);
     }
 };
 
+// Ejecución del script
 importarDatos();
