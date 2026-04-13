@@ -1,12 +1,16 @@
+// ==========================================
+// CONTROLADOR DE PRODUCTOS (PERFUMES)
+// Gestión de inventario en la base de datos NoSQL
+// ==========================================
 const Producto = require('../models/Producto');
 
-// Listar perfumes
+// Listar todos los perfumes
 exports.obtenerProductos = async (req, res) => {
     try {
-        // .sort({ fechaCreacion: -1 }) opcional para mostrar los más nuevos primero
+        // Ordenamos por fecha de creación para mostrar los más nuevos primero
         const productos = await Producto.find().sort({ fechaCreacion: -1 });
         
-        // Verificación para el desarrollador
+        // Log de diagnóstico para monitorear el tráfico desde el servidor
         console.log(`📡 Enviando ${productos.length} productos al frontend`);
         
         res.json(productos);
@@ -16,10 +20,10 @@ exports.obtenerProductos = async (req, res) => {
     }
 };
 
-// Crear perfume
+// Crear un nuevo perfume
 exports.crearProducto = async (req, res) => {
     try {
-        // Validamos que el cuerpo de la petición no venga vacío
+        // Validación de integridad: Evita guardar documentos vacíos
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({ mensaje: 'El cuerpo de la solicitud no puede estar vacío' });
         }
@@ -27,13 +31,13 @@ exports.crearProducto = async (req, res) => {
         const nuevoProducto = new Producto(req.body);
         await nuevoProducto.save();
         
-        console.log(`✨ Producto creado: ${nuevoProducto.nombre}`);
+        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.nombre}`);
         res.status(201).json(nuevoProducto);
     } catch (error) {
         console.error("Error en crearProducto:", error);
         res.status(400).json({ 
             mensaje: 'Error al crear producto', 
-            error: error.message // Enviamos el mensaje de error específico para debug
+            error: error.message 
         });
     }
 };
