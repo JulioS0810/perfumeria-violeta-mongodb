@@ -7,9 +7,9 @@
 
 // 1. IMPORTACIÓN DE MÓDULOS ESENCIALES
 const express = require('express'); // Framework para la creación de la API REST
-const conectarDB = require('./config/db'); // Importa la lógica de conexión a la base de datos NoSQL
-const cors = require('cors'); // Middleware para habilitar la comunicación entre Frontend y Backend
-require('dotenv').config(); // Carga variables de entorno (como el puerto y la URI de la DB)
+const conectarDB = require('./config/db'); // Importa la lógica de conexión a la base de datos
+const cors = require('cors'); // Middleware para permitir peticiones desde el Frontend (React)
+require('dotenv').config(); // Carga de variables de entorno seguras (.env)
 
 // =========================================================
 // 2. INICIALIZACIÓN DE LA APLICACIÓN
@@ -19,16 +19,15 @@ const app = express();
 // =========================================================
 // 3. CONEXIÓN A LA BASE DE DATOS
 // =========================================================
-// Se invoca la función conectarDB para establecer el vínculo con MongoDB.
-// IMPORTANTE: El servicio de MongoDB debe estar activo en el sistema 
-// para que esta función no retorne un error de conexión.
+// Se invoca la función para conectar con la instancia local de MongoDB.
+// Nota: Es vital tener el servicio activo en el sistema para evitar el error ECONNREFUSED.
 conectarDB();
 
 // =========================================================
-// 4. MIDDLEWARES (PROCESAMIENTO DE INFORMACIÓN)
+// 4. MIDDLEWARES (PROCESAMIENTO DE DATOS)
 // =========================================================
-app.use(cors()); // Permite peticiones desde el origen de nuestro Frontend (React)
-app.use(express.json()); // Habilita la lectura de cuerpos JSON (necesario para pruebas en Postman)
+app.use(cors()); // Habilita el intercambio de recursos entre dominios
+app.use(express.json()); // Permite que el servidor entienda el formato JSON en las peticiones
 
 // =========================================================
 // 5. RUTAS DE PRUEBA Y DIAGNÓSTICO
@@ -36,7 +35,7 @@ app.use(express.json()); // Habilita la lectura de cuerpos JSON (necesario para 
 
 /**
  * @route   GET /
- * @desc    Ruta raíz para verificar que el servidor está escuchando
+ * @desc    Verificación inicial de disponibilidad del servidor
  */
 app.get('/', (req, res) => {
     res.send('🌸 Servidor de Perfumería Violeta - Backend en Línea');
@@ -44,7 +43,7 @@ app.get('/', (req, res) => {
 
 /**
  * @route   GET /api/diagnostico
- * @desc    Punto de control para validar conectividad inicial en Postman
+ * @desc    Endpoint de control para validar la comunicación en Postman
  */
 app.get('/api/diagnostico', (req, res) => {
     res.json({ 
@@ -57,16 +56,16 @@ app.get('/api/diagnostico', (req, res) => {
 // 6. RUTAS DEL SISTEMA (API ENDPOINTS)
 // =========================================================
 
-// Enrutador para la gestión del inventario de perfumes
+// Enrutador para la gestión del inventario de productos
 app.use('/api/productos', require('./routes/productoRoutes'));
 
-// Enrutador principal para la gestión y registro de usuarios (Pruebas de la EV04)
+// Enrutador para la gestión y registro de usuarios (Usado en el video de la EV04)
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
 
 // =========================================================
 // 7. ARRANQUE DEL SERVIDOR
 // =========================================================
-// Se define el puerto lógico. Si no existe en el .env, se usa el puerto 4000 por defecto.
+// Definición del puerto lógico (Prioriza el puerto del archivo .env o usa el 4000 por defecto)
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
