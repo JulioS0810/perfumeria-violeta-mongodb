@@ -1,30 +1,33 @@
-# 🌸 Plataforma Web Perfumería Violeta - Backend NoSQL
+# Perfumería Violeta - Integración de Módulos (GA8-220501096-AA1-EV01)
 
-Este repositorio contiene el desarrollo del backend para la **Plataforma Web Perfumería Violeta**, correspondiente a la evidencia **GA7-220501096-AA5-EV03** del programa de Análisis y Desarrollo de Software del SENA.
+Este repositorio contiene la solución técnica para la evidencia de desempeño del SENA, enfocada en la integración de módulos de software utilizando el stack **MERN** (MongoDB, Express, React, Node.js).
 
-## 🚀 Tecnologías Utilizadas
+## 🚀 Descripción del Proyecto
+Plataforma web para la gestión de catálogo de perfumes. El sistema integra una base de datos NoSQL con una API REST y una interfaz de usuario reactiva, permitiendo la visualización dinámica de 132 productos.
 
-Este proyecto ha sido migrado de una arquitectura relacional a una arquitectura **NoSQL** utilizando el Stack MERN:
+## 🛠️ Tecnologías Utilizadas
+* **Frontend:** React.js
+* **Backend:** Node.js & Express.js
+* **Base de Datos:** MongoDB (Local Community Server)
+* **Gestión de Versiones:** Git & GitHub
 
-* **Node.js**: Entorno de ejecución para JavaScript.
-* **Express.js**: Framework para la creación de la API REST.
-* **MongoDB**: Base de datos orientada a documentos.
-* **Mongoose**: ODM para el modelado de datos y validaciones de esquema.
-* **Postman**: Herramienta utilizada para las pruebas funcionales de los servicios web.
+## 📡 Configuración de Red e Integración
+Para esta fase de integración (**GA8**), el sistema ha sido configurado para operar en una red local bajo la dirección IP:
+`http://192.168.5.105`
 
-## 🛠️ Características del Proyecto
+* **Frontend:** Puerto 3000
+* **Backend / API:** Puerto 4000
 
-* **Persistencia de Datos**: Almacenamiento flexible en documentos JSON.
-* **Seguridad**: Configuración de seguridad en el modelo de usuario para evitar la exposición de contraseñas (`select: false`).
-* **Escalabilidad**: Gestión eficiente de catálogos de productos (actualmente con 132 registros).
-* **Arquitectura Limpia**: Separación de responsabilidades en Modelos, Controladores y Rutas.
+## 📁 Estructura del Repositorio
+* `/backend`: Lógica de servidor, modelos de datos y controladores.
+* `/frontend`: Interfaz de usuario y lógica de consumo de servicios.
+    * `/build`: **Archivos Compilados** optimizados para producción.
 
-## 📂 Estructura del Backend
+## ⚙️ Instrucciones de Ejecución
+1. **Backend:** `cd backend && npm install && npm start`
+2. **Frontend:** `cd frontend && npm install && npm start`
 
-```text
-backend/
-├── config/       # Configuración de conexión a MongoDB
-├── controllers/  # Lógica de negocio de los servicios
-├── models/       # Esquemas de datos (Mongoose)
-├── routes/       # Definición de los endpoints de la API
-└── index.js      # Punto de entrada del servidor
+---
+**Aprendiz:** Julio César Suárez Garavito  
+**Instructor:** Elizabeth Gelves Gelves  
+**SENA - 2026**
