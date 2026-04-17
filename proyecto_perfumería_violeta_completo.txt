@@ -1,0 +1,433 @@
+ESTRUCTURA DEL PROYECTO: PROYECTO-PERFUMERIA-VIOLETA
+====================================================
+.
+./frontend
+./frontend/README.md
+./frontend/public
+./frontend/public/index.html
+./frontend/public/imagenes
+./frontend/public/manifest.json
+./frontend/public/robots.txt
+./frontend/package-lock.json
+./frontend/package.json
+./frontend/src
+./frontend/src/index.js
+./frontend/src/styles
+./frontend/src/components
+./frontend/src/App.js
+./frontend/src/services
+./proyecto_perfumería_violeta_completo.txt
+./backend
+./backend/config
+./backend/config/db.js
+./backend/index.js
+./backend/models
+./backend/models/Usuario.js
+./backend/models/Producto.js
+./backend/package-lock.json
+./backend/package.json
+./backend/tsconfig.json
+./backend/seed.js
+./backend/controllers
+./backend/controllers/usuarioController.js
+./backend/controllers/productoController.js
+./backend/routes
+./backend/routes/productoRoutes.js
+./backend/routes/usuarioRoutes.js
+./README.md
+
+
+CONTENIDO DE LOS MÓDULOS
+====================================================
+// =========================================================
+// SERVIDOR PRINCIPAL - PERFUMERÍA VIOLETA
+// Proyecto: GA7-220501096-AA5-EV04
+// Aprendiz: Julio César Suárez Garavito
+// Arquitectura: Node.js, Express y MongoDB
+// =========================================================
+
+// 1. IMPORTACIÓN DE MÓDULOS ESENCIALES
+const express = require('express'); // Framework para la creación de la API REST
+const conectarDB = require('./config/db'); // Importa la lógica de conexión a la base de datos
+const cors = require('cors'); // Middleware para permitir peticiones desde el Frontend (React)
+require('dotenv').config(); // Carga de variables de entorno seguras (.env)
+
+// =========================================================
+// 2. INICIALIZACIÓN DE LA APLICACIÓN
+// =========================================================
+const app = express();
+
+// =========================================================
+// 3. CONEXIÓN A LA BASE DE DATOS
+// =========================================================
+// Se invoca la función para conectar con la instancia local de MongoDB.
+// Nota: Es vital tener el servicio activo en el sistema para evitar el error ECONNREFUSED.
+conectarDB();
+
+// =========================================================
+// 4. MIDDLEWARES (PROCESAMIENTO DE DATOS)
+// =========================================================
+app.use(cors()); // Habilita el intercambio de recursos entre dominios
+app.use(express.json()); // Permite que el servidor entienda el formato JSON en las peticiones
+
+// =========================================================
+// 5. RUTAS DE PRUEBA Y DIAGNÓSTICO
+// =========================================================
+
+/**
+ * @route   GET /
+ * @desc    Verificación inicial de disponibilidad del servidor
+ */
+app.get('/', (req, res) => {
+    res.send('🌸 Servidor de Perfumería Violeta - Backend en Línea');
+});
+
+/**
+ * @route   GET /api/diagnostico
+ * @desc    Endpoint de control para validar la comunicación en Postman
+ */
+app.get('/api/diagnostico', (req, res) => {
+    res.json({ 
+        mensaje: "¡Conexión exitosa!",
+        estado: "El servidor Node.js está operando correctamente." 
+    });
+});
+
+// =========================================================
+// 6. RUTAS DEL SISTEMA (API ENDPOINTS)
+// =========================================================
+
+// Enrutador para la gestión del inventario de productos
+app.use('/api/productos', require('./routes/productoRoutes'));
+
+// Enrutador para la gestión y registro de usuarios (Usado en el video de la EV04)
+app.use('/api/usuarios', require('./routes/usuarioRoutes'));
+
+// =========================================================
+// 7. ARRANQUE DEL SERVIDOR
+// =========================================================
+// Definición del puerto lógico (Prioriza el puerto del archivo .env o usa el 4000 por defecto)
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+    console.log('=========================================================');
+    console.log(`🚀 SERVIDOR INICIADO EN EL PUERTO: ${PORT}`);
+    console.log(`🔗 URL BASE: http://localhost:${PORT}`);
+    console.log(`✅ ESTADO: Backend listo para recibir peticiones`);
+    console.log('=========================================================');
+});
+// ==========================================
+// CONFIGURACIÓN DE BASE DE DATOS (MongoDB)
+// ==========================================
+const mongoose = require('mongoose');
+
+const conectarDB = async () => {
+    try {
+        // Usa la variable de entorno del .env o la URL local por defecto
+        const url = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/perfumeriaVioleta';
+        
+        // Configuración de conexión a MongoDB mediante Mongoose
+        const connection = await mongoose.connect(url);
+
+        const host = connection.connection.host;
+        const port = connection.connection.port;
+        const dbName = connection.connection.name;
+
+        console.log(`✅ MongoDB Conectado en: ${host}:${port}`);
+        console.log(`🌸 Base de Datos activa: ${dbName}`); 
+
+    } catch (error) {
+        console.error(`❌ Error de conexión a la base de datos: ${error.message}`);
+        // Detiene la aplicación si no hay conexión para evitar errores en cascada
+        process.exit(1); 
+    }
+};
+
+module.exports = conectarDB;
+const mongoose = require('mongoose');
+
+const ProductoSchema = mongoose.Schema({
+    nombre: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    marca: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    precio: {
+        type: Number,
+        required: true
+    },
+    descripcion: {
+        type: String,
+        required: true
+    },
+    genero: {
+        type: String,
+        required: true,
+        enum: ['Hombre', 'Mujer', 'Unisex'], // Solo permite estos valores
+        default: 'Unisex'
+    },
+    categoria: {
+        type: String, // Ejemplo: Floral, Cítrico, Amaderado
+        required: true
+    },
+    imagen: {
+        type: String, // Aquí guardaremos la URL de la imagen
+        default: 'https://via.placeholder.com/300'
+    },
+    stock: {
+        type: Number,
+        default: 10
+    },
+    fechaCreacion: {
+        type: Date,
+        default: Date.now()
+    }
+});
+
+module.exports = mongoose.model('Producto', ProductoSchema);const mongoose = require('mongoose');
+
+const usuarioSchema = new mongoose.Schema({
+    nombre: { 
+        type: String, 
+        required: true, 
+        trim: true 
+    },
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true, 
+        lowercase: true, 
+        trim: true 
+    },
+    password: { 
+        type: String, 
+        required: true, 
+        select: false // <--- ESTA ES LA CORRECCIÓN CLAVE
+    },
+    rol: { 
+        type: String, 
+        default: 'cliente' 
+    },
+    fechaCreacion: { 
+        type: Date, 
+        default: Date.now 
+    }
+});
+
+module.exports = mongoose.model('Usuario', usuarioSchema);// ==========================================
+// RUTAS DE PRODUCTOS (PERFUMES)
+// Definición de Endpoints para el Inventario
+// ==========================================
+const express = require('express');
+const router = express.Router();
+
+// Importamos el controlador que maneja la lógica de los productos en MongoDB
+const productoControllers = require('../controllers/productoController');
+
+// ==========================================
+// 1. RUTA: LISTAR PRODUCTOS (GET)
+// ==========================================
+/**
+ * @route   GET /api/productos
+ * @desc    Obtiene todos los perfumes almacenados en la base de datos NoSQL.
+ * @access  Público
+ */
+router.get('/', productoControllers.obtenerProductos);
+
+// ==========================================
+// 2. RUTA: CREAR PRODUCTO (POST)
+// ==========================================
+/**
+ * @route   POST /api/productos
+ * @desc    Registra un nuevo perfume en la colección 'productos'.
+ * @access  Público
+ */
+router.post('/', productoControllers.crearProducto);
+
+module.exports = router;
+// ==========================================
+// RUTAS DE USUARIOS - PERFUMERÍA VIOLETA
+// Definición de Endpoints para la Gestión de Usuarios
+// ==========================================
+
+const express = require('express');
+const router = express.Router();
+
+// Importamos el controlador con la lógica de negocio y persistencia
+const usuarioController = require('../controllers/usuarioController');
+
+// ==========================================
+// 1. RUTA: OBTENER TODOS LOS USUARIOS (GET)
+// ==========================================
+/**
+ * @route   GET /api/usuarios
+ * @desc    Obtiene la lista de usuarios registrados en MongoDB.
+ * @access  Público (por ahora)
+ */
+router.get('/', usuarioController.obtenerUsuarios);
+
+// ==========================================
+// 2. RUTA: REGISTRAR UN NUEVO USUARIO (POST)
+// ==========================================
+/**
+ * @route   POST /api/usuarios
+ * @desc    Recibe datos del Frontend (React) y los guarda en la base de datos.
+ * @access  Público
+ */
+router.post('/', usuarioController.crearUsuario);
+
+// ==========================================
+// 3. RUTA: ELIMINAR USUARIO POR ID (DELETE)
+// ==========================================
+/**
+ * @route   DELETE /api/usuarios/:id
+ * @desc    Elimina un documento de la colección basándose en su ID único.
+ * @access  Privado/Administrador
+ */
+router.delete('/:id', usuarioController.eliminarUsuario);
+
+// Exportamos el router para que sea utilizado en index.js
+module.exports = router;
+// ==========================================
+// CONTROLADOR DE PRODUCTOS (PERFUMES)
+// Gestión de inventario en la base de datos NoSQL
+// ==========================================
+const Producto = require('../models/Producto');
+
+// Listar todos los perfumes
+exports.obtenerProductos = async (req, res) => {
+    try {
+        // Ordenamos por fecha de creación para mostrar los más nuevos primero
+        const productos = await Producto.find().sort({ fechaCreacion: -1 });
+        
+        // Log de diagnóstico para monitorear el tráfico desde el servidor
+        console.log(`📡 Enviando ${productos.length} productos al frontend`);
+        
+        res.json(productos);
+    } catch (error) {
+        console.error("Error en obtenerProductos:", error);
+        res.status(500).json({ mensaje: 'Error al buscar productos' });
+    }
+};
+
+// Crear un nuevo perfume
+exports.crearProducto = async (req, res) => {
+    try {
+        // Validación de integridad: Evita guardar documentos vacíos
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.status(400).json({ mensaje: 'El cuerpo de la solicitud no puede estar vacío' });
+        }
+
+        const nuevoProducto = new Producto(req.body);
+        await nuevoProducto.save();
+        
+        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.nombre}`);
+        res.status(201).json(nuevoProducto);
+    } catch (error) {
+        console.error("Error en crearProducto:", error);
+        res.status(400).json({ 
+            mensaje: 'Error al crear producto', 
+            error: error.message 
+        });
+    }
+};
+// ==========================================
+// CONTROLADOR DE USUARIOS - PERFUMERÍA VIOLETA
+// Propósito: Gestionar el ciclo de vida de los usuarios en MongoDB
+// ==========================================
+
+const Usuario = require('../models/Usuario');
+const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de contraseñas
+
+// ==========================================
+// 1. OBTENER USUARIOS (GET)
+// ==========================================
+exports.obtenerUsuarios = async (req, res) => {
+    try {
+        // Traemos todos los registros de la colección 'usuarios'
+        // .sort({ creado: -1 }) hace que los más nuevos aparezcan primero (como en el video)
+        const usuarios = await Usuario.find().sort({ creado: -1 });
+        
+        res.json(usuarios);
+    } catch (error) {
+        console.error("❌ Error al listar usuarios:", error);
+        res.status(500).json({ msg: 'Hubo un error al obtener los usuarios' });
+    }
+};
+
+// ==========================================
+// 2. REGISTRAR USUARIO (POST)
+// ==========================================
+exports.crearUsuario = async (req, res) => {
+    // Extraemos los datos enviados desde el formulario de React
+    const { email, password, nombre } = req.body;
+
+    try {
+        // A. VALIDACIÓN PREVIA: Verificar que no falten datos esenciales
+        if (!email || !password || !nombre) {
+            return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
+        }
+
+        // B. UNICIDAD: Comprobar si el correo ya existe en MongoDB
+        let usuarioExistente = await Usuario.findOne({ email });
+        if (usuarioExistente) {
+            return res.status(400).json({ msg: 'El correo ya está registrado' });
+        }
+
+        // C. INSTANCIA: Creamos el nuevo objeto siguiendo el Modelo
+        const nuevoUsuario = new Usuario(req.body);
+
+        // D. SEGURIDAD: Encriptación de contraseña (Hasing)
+        // Generamos una semilla de seguridad (salt) de 10 rondas
+        const salt = await bcryptjs.genSalt(10);
+        // Hasheamos la clave plana para que en MongoDB sea ilegible por humanos
+        nuevoUsuario.password = await bcryptjs.hash(password, salt);
+
+        // E. PERSISTENCIA: Guardamos en la base de datos
+        await nuevoUsuario.save();
+        
+        console.log(`✅ Nuevo usuario en MongoDB: ${email}`);
+
+        // F. LIMPIEZA: No enviamos el password de vuelta al cliente por seguridad
+        const respuestaSegura = nuevoUsuario.toObject();
+        delete respuestaSegura.password;
+
+        res.status(201).json({
+            msg: 'Usuario creado con éxito en MongoDB',
+            usuario: respuestaSegura
+        });
+
+    } catch (error) {
+        console.error("❌ Error en el registro:", error);
+        res.status(500).json({ msg: 'Error interno al procesar el registro' });
+    }
+};
+
+// ==========================================
+// 3. ELIMINAR USUARIO (DELETE)
+// ==========================================
+exports.eliminarUsuario = async (req, res) => {
+    try {
+        // Obtenemos el ID desde los parámetros de la URL (req.params.id)
+        const idUsuario = req.params.id;
+
+        // Intentamos buscar y borrar en un solo paso
+        const usuarioBorrado = await Usuario.findByIdAndDelete(idUsuario);
+
+        if (!usuarioBorrado) {
+            return res.status(404).json({ msg: 'El usuario no existe en la base de datos' });
+        }
+
+        console.log(`🗑️ Usuario eliminado: ${idUsuario}`);
+        res.json({ msg: 'Usuario eliminado correctamente de MongoDB' });
+
+    } catch (error) {
+        console.error("❌ Error al eliminar:", error);
+        res.status(500).json({ msg: 'Error al intentar borrar el registro' });
+    }
+};
