@@ -1,7 +1,7 @@
 // ==========================================
 // SCRIPT DE SEMILLADO (SEEDER) - PERFUMERÍA VIOLETA
-// Propósito: Cargar los 132 productos con la información exacta del diseño SQL.
-// Evidencia: GA8-220501096-AA1-EV02
+// Propósito: Carga masiva de 132 productos con datos validados.
+// Evidencia: GA8-220501096-AA1-EV02 (Módulos Integrados)
 // ==========================================
 
 require('dotenv').config();
@@ -10,16 +10,15 @@ const conectarDB = require('./config/db');
 const Producto = require('./models/Producto');
 
 // ==========================================
-// 1. BASE DE DATOS DE PRODUCTOS (DATOS CURADOS)
-// Se reemplaza el array de strings por objetos para asegurar la integridad 
-// del género y la marca definidos en el archivo de texto.
+// 1. BASE DE DATOS DE PRODUCTOS (LISTADO COMPLETO)
+// Datos extraídos fielmente del diseño SQL original.
 // ==========================================
 const perfumes = [
     { nombre: "212 Heroes Forever Young Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
-    { nombre: "212 NYC Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
-    { nombre: "212 Sexy Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
+    { nombre: "212 NYC Carolina Herrera", marca: "Carolina Herrera", genero: "Hombre" },
+    { nombre: "212 Sexy Carolina Herrera", marca: "Carolina Herrera", genero: "Hombre" },
     { nombre: "212 Vip Rose Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
-    { nombre: "212 Vip Carolina Herrera", marca: "Hombre" },
+    { nombre: "212 Vip Carolina Herrera", marca: "Carolina Herrera", genero: "Hombre" },
     { nombre: "3 am Sean John", marca: "Sean John", genero: "Hombre" },
     { nombre: "9 am Dive Afnan", marca: "Afnan", genero: "Hombre" },
     { nombre: "9 am Pour Femme Afnan", marca: "Afnan", genero: "Mujer" },
@@ -37,7 +36,7 @@ const perfumes = [
     { nombre: "Bad Boy Extreme Carolina Herrera", marca: "Carolina Herrera", genero: "Hombre" },
     { nombre: "Baiser Vole de Cartier", marca: "Cartier", genero: "Mujer" },
     { nombre: "Because it´s You Giorgio Armani", marca: "Giorgio Armani", genero: "Mujer" },
-    { nombre: "Bitter Peach Tom Ford", marca: "Tom Ford", genero: "Unisex" },
+    { nombre: "Bitter Peach Tom Ford", marca: "Tom Ford", genero: "Hombre" },
     { nombre: "Black Opium Intense Yves Saint Laurent", marca: "Yves Saint Laurent", genero: "Mujer" },
     { nombre: "Blue Noir Narciso Rodriguez", marca: "Narciso Rodriguez", genero: "Hombre" },
     { nombre: "CH Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
@@ -51,7 +50,7 @@ const perfumes = [
     { nombre: "Coco Eau de Parfum Chanel", marca: "Chanel", genero: "Mujer" },
     { nombre: "Coco Mademoiselle Chanel", marca: "Chanel", genero: "Mujer" },
     { nombre: "Code Profumo Giorgio Armani", marca: "Giorgio Armani", genero: "Hombre" },
-    { nombre: "Costa Azzurra Tom Ford", marca: "Tom Ford", genero: "Unisex" },
+    { nombre: "Costa Azzurra Tom Ford", marca: "Tom Ford", genero: "Hombre" },
     { nombre: "Declaration Essence de Cartier", marca: "Cartier", genero: "Hombre" },
     { nombre: "Declaration Parfum de Cartier", marca: "Cartier", genero: "Hombre" },
     { nombre: "Declaration Eau de Toilette de Cartier", marca: "Cartier", genero: "Hombre" },
@@ -82,7 +81,7 @@ const perfumes = [
     { nombre: "L'eau D'issey Pour Homme Sport Issey Miyake", marca: "Issey Miyake", genero: "Hombre" },
     { nombre: "L'eau Super Majeure Issey Miyake", marca: "Issey Miyake", genero: "Hombre" },
     { nombre: "Joy Christian Dior", marca: "Christian Dior", genero: "Mujer" },
-    { nombre: "Khamrah Lattafa", marca: "Lattafa", genero: "Unisex" },
+    { nombre: "Khamrah Lattafa", marca: "Lattafa", genero: "Hombre" },
     { nombre: "L'Homme L'intense Yves Saint Laurent", marca: "Yves Saint Laurent", genero: "Hombre" },
     { nombre: "L'Homme L'Eau Prada", marca: "Prada", genero: "Hombre" },
     { nombre: "L'Homme Prada", marca: "Prada", genero: "Hombre" },
@@ -109,30 +108,30 @@ const perfumes = [
     { nombre: "Miss Armaf Chic Armaf", marca: "Armaf", genero: "Mujer" },
     { nombre: "Miss Dior Christian Dior", marca: "Christian Dior", genero: "Mujer" },
     { nombre: "Mon Paris Yves Saint Laurent", marca: "Yves Saint Laurent", genero: "Mujer" },
-    { nombre: "Muscat Ormonde Jayne", marca: "Ormonde Jayne", genero: "Unisex" },
+    { nombre: "Muscat Ormonde Jayne", marca: "Ormonde Jayne", genero: "Hombre" },
     { nombre: "My Way Giorgio Armani", marca: "Giorgio Armani", genero: "Mujer" },
     { nombre: "Nautica Life Energy Nautica", marca: "Nautica", genero: "Hombre" },
     { nombre: "Nautica Pure Blue Nautica", marca: "Nautica", genero: "Hombre" },
     { nombre: "Nautica Voyage Nautica", marca: "Nautica", genero: "Hombre" },
     { nombre: "Nuit D'issey Issey Miyake", marca: "Issey Miyake", genero: "Hombre" },
     { nombre: "Odyssey Candee Armaf", marca: "Armaf", genero: "Mujer" },
-    { nombre: "Ombre Leather Tom Ford", marca: "Tom Ford", genero: "Unisex" },
-    { nombre: "Ombre Nomade Louis Vuitton", marca: "Louis Vuitton", genero: "Unisex" },
+    { nombre: "Ombre Leather Tom Ford", marca: "Tom Ford", genero: "Hombre" },
+    { nombre: "Ombre Nomade Louis Vuitton", marca: "Louis Vuitton", genero: "Hombre" },
     { nombre: "Ormonde Man Ormonde Jayne", marca: "Ormonde Jayne", genero: "Hombre" },
     { nombre: "Ormonde Woman Ormonde Jayne", marca: "Ormonde Jayne", genero: "Mujer" },
     { nombre: "Pasha de Cartier", marca: "Cartier", genero: "Hombre" },
     { nombre: "Poison Christian Dior", marca: "Christian Dior", genero: "Mujer" },
-    { nombre: "Pur Oud Louis Vuitton", marca: "Louis Vuitton", genero: "Unisex" },
-    { nombre: "Roma Passione Laura Biagiotti", marca: "Laura Biagiotti", genero: "Mujer" },
+    { nombre: "Pur Oud Louis Vuitton", marca: "Louis Vuitton", genero: "Hombre" },
+    { nombre: "Roma Passione Laura Biagiotti", marca: "Laura Biagiotti", genero: "Hombre" },
     { nombre: "Roma Uomo Laura Biagiotti", marca: "Laura Biagiotti", genero: "Hombre" },
     { nombre: "Romamor Uomo Laura Biagiotti", marca: "Laura Biagiotti", genero: "Hombre" },
-    { nombre: "Royal Elixir Ormonde Jayne", marca: "Ormonde Jayne", genero: "Unisex" },
+    { nombre: "Royal Elixir Ormonde Jayne", marca: "Ormonde Jayne", genero: "Hombre" },
     { nombre: "Santos de Cartier", marca: "Cartier", genero: "Hombre" },
     { nombre: "Sauvage Christian Dior", marca: "Christian Dior", genero: "Hombre" },
     { nombre: "Sauvage Elixir Christian Dior", marca: "Christian Dior", genero: "Hombre" },
     { nombre: "Sauvage Parfum Christian Dior", marca: "Christian Dior", genero: "Hombre" },
     { nombre: "Scandal Absolu Jean Paul Gaultier", marca: "Jean Paul Gaultier", genero: "Mujer" },
-    { nombre: "Scandal Jean Paul Gaultier", marca: "Hombre" },
+    { nombre: "Scandal Jean Paul Gaultier", marca: "Jean Paul Gaultier", genero: "Hombre" },
     { nombre: "Si Girogio Armani", marca: "Giorgio Armani", genero: "Mujer" },
     { nombre: "Sky Di Gioa Giorgio Armani", marca: "Giorgio Armani", genero: "Mujer" },
     { nombre: "Stronger With You Giorgio Armani", marca: "Giorgio Armani", genero: "Hombre" },
@@ -141,8 +140,8 @@ const perfumes = [
     { nombre: "Ultra Male Jean Paul Gaultier", marca: "Jean Paul Gaultier", genero: "Hombre" },
     { nombre: "Unforgivable Sean John", marca: "Sean John", genero: "Hombre" },
     { nombre: "Very Good Girl Carolina Herrera", marca: "Carolina Herrera", genero: "Mujer" },
-    { nombre: "Vetiveria Ormonde Jayne", marca: "Ormonde Jayne", genero: "Unisex" },
-    { nombre: "Voyage D'Hermes", marca: "Hermes", genero: "Unisex" },
+    { nombre: "Vetiveria Ormonde Jayne", marca: "Ormonde Jayne", genero: "Hombre" },
+    { nombre: "Voyage D'Hermes", marca: "Hermes", genero: "Hombre" },
     { nombre: "Y Le Parfum Yves Saint Laurent", marca: "Yves Saint Laurent", genero: "Hombre" },
     { nombre: "Y Live Yves Saint Laurent", marca: "Yves Saint Laurent", genero: "Hombre" },
     { nombre: "Yara Lattafa", marca: "Lattafa", genero: "Mujer" },
@@ -157,18 +156,18 @@ const importarDatos = async () => {
         console.log('🔗 Iniciando conexión a MongoDB...');
         await conectarDB();
         
-        // Limpieza de datos previos para asegurar que los géneros se actualicen
+        // Limpieza de datos previos para asegurar que no queden registros antiguos
         console.log('🧹 Limpiando colección de productos...');
         await Producto.deleteMany({}); 
 
-        console.log('🚀 Procesando información curada de 132 fragancias...');
+        console.log('🚀 Procesando información de 132 fragancias validadas...');
         const productosProcesados = perfumes.map(item => ({
             nombre: item.nombre,
-            marca: item.marca || "Marca Premium",
-            // Se mantiene el precio aleatorio para simular el catálogo comercial
+            marca: item.marca,
+            // Genera un precio aleatorio comercial para las pruebas
             precio: Math.floor(Math.random() * (600000 - 200000)) + 200000,
-            descripcion: `Fragancia premium de la línea ${item.nombre}. Calidad excepcional y persistencia garantizada.`,
-            genero: item.genero, // INTEGRACIÓN DIRECTA: Se usa el género definido en el objeto
+            descripcion: `Fragancia premium de la línea ${item.nombre}.`,
+            genero: item.genero, // Integración directa del género definido manualmente
             categoria: "Lujo",
             imagen: `/imagenes/productos/${item.nombre}.webp`,
             stock: 15
@@ -176,14 +175,14 @@ const importarDatos = async () => {
 
         // Inserción masiva en la base de datos
         await Producto.insertMany(productosProcesados);
-        console.log(`✅ ¡Éxito! Se han cargado ${productosProcesados.length} perfumes con géneros validados.`);
+        console.log(`✅ ¡Éxito! Se han cargado ${productosProcesados.length} perfumes correctamente.`);
         
         // Cierre de seguridad de la conexión
         await mongoose.connection.close();
         process.exit(0);
 
     } catch (error) {
-        console.error('❌ Error crítico al cargar datos en la EV02:', error);
+        console.error('❌ Error crítico al cargar datos:', error);
         process.exit(1);
     }
 };
