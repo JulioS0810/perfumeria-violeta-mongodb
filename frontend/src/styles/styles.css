@@ -1,4 +1,17 @@
+/* ==========================================
+   HOJA DE ESTILOS - PERFUMERÍA VIOLETA
+   Propósito: Identidad Visual y Diseño Responsivo
+   ========================================== */
+
+/* 1. IMPORTACIÓN DE FUENTES */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+/* 2. VARIABLES Y ESTILOS BASE */
+:root {
+    --violeta-principal: #6a1b9a;
+    --violeta-oscuro: #4a148c;
+    --dorado: #d4af37;
+}
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -8,12 +21,18 @@ body {
     line-height: 1.6;
 }
 
+/* 3. TIPOGRAFÍA ESPECIAL */
 .brand-text {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
+    letter-spacing: 1px;
 }
 
-/* Sección Hero / Banner */
+.text-violeta {
+    color: var(--violeta-principal) !important;
+}
+
+/* 4. SECCIÓN HERO (BANNER) */
 .hero-section {
     min-height: 450px;
     display: flex;
@@ -23,14 +42,24 @@ body {
     padding: 100px 0;
     text-align: center;
     margin-bottom: 40px;
-    /* No ponemos background aquí para evitar errores de compilación */
 }
 
-.logo-img {
-    height: 60px;
-    width: auto;
+.btn-registro-hero {
+    background-color: var(--violeta-principal);
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
+.btn-registro-hero:hover {
+    background-color: var(--violeta-oscuro);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(106, 27, 154, 0.3);
+}
+
+/* 5. NAVEGACIÓN */
 .nav-link {
     font-weight: 600;
     color: #333333 !important;
@@ -38,26 +67,43 @@ body {
 }
 
 .nav-link:hover {
-    color: #6a1b9a !important;
+    color: var(--violeta-principal) !important;
 }
 
-.card-producto {
-    transition: transform 0.3s, box-shadow 0.3s;
+/* 6. TARJETAS DE PRODUCTOS (CARDS) */
+.card-hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.card-producto:hover {
+.card-hover-effect:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 15px 30px rgba(106, 27, 154, 0.15) !important;
 }
 
+.tag-genero {
+    background-color: var(--violeta-principal) !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 8px 12px;
+}
+
+/* 7. BOTONES DE CATÁLOGO */
 .btn-violeta-outline {
-    border: 2px solid #6a1b9a;
-    color: #6a1b9a;
+    border: 2px solid var(--violeta-principal);
+    color: var(--violeta-principal);
     font-weight: 600;
+    background: white;
     transition: 0.3s;
 }
 
 .btn-violeta-outline:hover {
-    background-color: #6a1b9a;
+    background-color: var(--violeta-principal);
     color: white;
+}
+
+/* 8. ELEMENTOS DE CARGA */
+.spinner-border.text-violeta {
+    color: var(--violeta-principal) !important;
 }

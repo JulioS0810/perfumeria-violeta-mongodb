@@ -7,33 +7,32 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-// Importación de componentes locales
+// Importación de componentes de la interfaz
 import Navbar from './components/Navbar';
 import Registro from './components/Registro';
 
-// Importación del servicio de comunicación con el Backend
+// Importación del servicio de datos (Capa de comunicación con el Backend)
 import { productService } from './services/productService';
 
-// Estilos globales
-import './App.css';
+// MODIFICACIÓN: Importación corregida hacia tu carpeta de estilos
+import './styles/styles.css';
 
 function App() {
   // ---------------------------------------------------------
   // ESTADOS GLOBALES
   // ---------------------------------------------------------
-  const [productos, setProductos] = useState([]); // Almacena los 132 perfumes de MongoDB
-  const [cargando, setCargando] = useState(true);  // Estado de carga para feedback al usuario
+  const [productos, setProductos] = useState([]); // Almacena los perfumes traídos de MongoDB
+  const [cargando, setCargando] = useState(true);  // Maneja el estado de espera (spinner)
 
   // ---------------------------------------------------------
-  // EFECTO DE CARGA: INTEGRACIÓN CON EL BACKEND
+  // EFECTO DE CARGA (INTEGRACIÓN)
   // ---------------------------------------------------------
   useEffect(() => {
     const cargarProductos = async () => {
       try {
-        console.log("📡 Solicitando catálogo a la API...");
+        // Llamada asíncrona a la API configurada en el backend
         const datos = await productService.getTodosLosProductos();
-        
-        // Validamos que los datos sean un array antes de asignar
+        // Validamos que los datos sean un array para evitar errores de renderizado
         setProductos(Array.isArray(datos) ? datos : []);
       } catch (error) {
         console.error("❌ Error de integración con MongoDB:", error);
@@ -45,24 +44,23 @@ function App() {
   }, []);
 
   // ---------------------------------------------------------
-  // SUB-COMPONENTE: VISTA DE INICIO (HOME + CATÁLOGO)
+  // SUB-COMPONENTE: VISTA DE INICIO (Home + Catálogo)
   // ---------------------------------------------------------
   const VistaInicio = () => (
     <>
-      {/* SECCIÓN HERO: Identidad de Marca */}
+      {/* SECCIÓN HERO: Banner principal con identidad de marca */}
       <header 
         className="hero-section text-white d-flex align-items-center justify-content-center mb-5"
         style={{ 
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/imagenes/foto_portada.png')`,
-          backgroundSize: 'cover', 
-          backgroundPosition: 'center'
+          backgroundSize: 'cover', backgroundPosition: 'center'
         }}
       >
         <div className="container text-center py-5">
           <h1 className="display-2 brand-text mb-3 text-white">Perfumería Violeta</h1>
           <p className="lead fs-3 fw-light italic">El aroma abraza tu esencia</p>
           <div className="mt-4">
-            <a href="#catalogo" className="btn btn-outline-light btn-lg px-5 me-3">Ver Catálogo</a>
+            <a href="#catalogo" className="btn btn-outline-light btn-lg px-5 me-3">Catálogo</a>
             <Link to="/registro" className="btn btn-lg px-5 btn-registro-hero">
               ¿Aún no eres usuario? Regístrate
             </Link>
@@ -70,24 +68,24 @@ function App() {
         </div>
       </header>
 
-      {/* SECCIÓN CATÁLOGO: Módulo de Inventario Integrado */}
+      {/* SECCIÓN CATÁLOGO: Módulo de productos dinámico */}
       <main className="container mb-5" id="catalogo">
         <div className="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
-          <h2 className="mb-0 fw-bold" style={{color: '#6a1b9a'}}>Colección Exclusiva</h2>
+          <h2 className="mb-0 fw-bold text-violeta">Colección Exclusiva</h2>
           <p className="text-muted mb-0"><strong>{productos.length}</strong> Fragancias disponibles</p>
         </div>
 
         <div className="row g-4">
           {!cargando ? (
             productos.map(p => {
-              // Lógica para procesar la ruta de la imagen proveniente de MongoDB
+              // Limpiamos la ruta de la imagen para que funcione localmente
               const nombreImagen = p.imagen.split('/').pop();
               const rutaFinal = `/imagenes/productos/${nombreImagen}`;
 
               return (
                 <div key={p._id} className="col-xl-3 col-lg-4 col-sm-6">
                   <div className="card h-100 shadow-sm border-0 card-hover-effect">
-                    {/* Badge de Género */}
+                    {/* Contenedor de Imagen */}
                     <div className="position-relative bg-light d-flex align-items-center justify-content-center" style={{ height: '250px' }}>
                       <img 
                         src={rutaFinal} 
@@ -96,33 +94,27 @@ function App() {
                         style={{ maxHeight: '100%', objectFit: 'contain' }}
                         onError={(e) => e.target.src = 'https://via.placeholder.com/250?text=Perfume'} 
                       />
-                      <span className="badge position-absolute top-0 start-0 m-3 tag-genero">
-                        {p.genero}
-                      </span>
+                      <span className="badge position-absolute top-0 start-0 m-3 tag-genero">{p.genero}</span>
                     </div>
 
-                    {/* Información del Producto */}
+                    {/* Cuerpo de la Card */}
                     <div className="card-body text-center d-flex flex-column">
                       <h6 className="fw-bold mb-1">{p.nombre}</h6>
                       <p className="text-muted small mb-2">{p.marca}</p>
                       <p className="fs-5 fw-bold text-violeta mt-auto">
                         ${p.precio.toLocaleString('es-CO')}
                       </p>
-                      <button className="btn btn-violeta-outline w-100 mt-2">
-                        Añadir al carrito
-                      </button>
+                      <button className="btn btn-violeta-outline w-100 mt-2">Añadir</button>
                     </div>
                   </div>
                 </div>
               );
             })
           ) : (
-            // Spinner de carga mientras responde el servidor
+            // Feedback visual mientras cargan los datos
             <div className="col-12 text-center py-5">
-              <div className="spinner-border" style={{color: '#6a1b9a'}} role="status">
-                <span className="visually-hidden">Cargando...</span>
-              </div>
-              <p className="mt-3 text-muted">Sincronizando con base de datos NoSQL...</p>
+              <div className="spinner-border text-violeta" role="status"></div>
+              <p className="mt-2 text-muted">Sincronizando catálogo con MongoDB...</p>
             </div>
           )}
         </div>
@@ -131,25 +123,18 @@ function App() {
   );
 
   // ---------------------------------------------------------
-  // RENDERIZADO PRINCIPAL (Router)
+  // RENDERIZADO GLOBAL (Estructura de la App)
   // ---------------------------------------------------------
   return (
     <Router>
       <div className="App">
-        {/* Módulo de Navegación persistente */}
         <Navbar />
-
         <Routes>
           <Route path="/" element={<VistaInicio />} />
           <Route path="/registro" element={<Registro />} />
         </Routes>
-
-        {/* Footer Informativo */}
         <footer className="bg-dark text-white py-4 mt-5 text-center">
-          <div className="container">
-            <p className="mb-0 opacity-75">© 2026 Perfumería Violeta | Bogotá, Colombia</p>
-            <small className="opacity-50">Evidencia GA8-220501096-AA1-EV02</small>
-          </div>
+          <p className="mb-0 opacity-75">© 2026 Perfumería Violeta | Bogotá, Colombia</p>
         </footer>
       </div>
     </Router>
