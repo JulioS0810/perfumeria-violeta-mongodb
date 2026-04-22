@@ -1,33 +1,71 @@
-# Perfumería Violeta - Integración de Módulos (GA8-220501096-AA1-EV01)
+Perfecto, Julio. Estás en el lugar exacto (la raíz del proyecto) para aplicar la actualización. El contenido que tienes actualmente en el README.md es funcional para la GA8, pero para cumplir con la GA4 (Arquitectura de Software), debemos expandirlo con los tres manuales específicos que discutimos, manteniendo la información técnica que ya validaste.
 
-Este repositorio contiene la solución técnica para la evidencia de desempeño del SENA, enfocada en la integración de módulos de software utilizando el stack **MERN** (MongoDB, Express, React, Node.js).
+Simplemente borra todo el contenido actual de tu archivo README.md y pega esta versión mejorada. Esta versión integra tu descripción actual con los requerimientos de arquitectura:
 
-## 🚀 Descripción del Proyecto
-Plataforma web para la gestión de catálogo de perfumes. El sistema integra una base de datos NoSQL con una API REST y una interfaz de usuario reactiva, permitiendo la visualización dinámica de 132 productos.
+🛒 Perfumería Violeta - Documentación de Arquitectura e Integración
+Evidencias: GA8-220501096-AA1-EV01 / GA4-220501095-AA2-EV05
 
-## 🛠️ Tecnologías Utilizadas
-* **Frontend:** React.js
-* **Backend:** Node.js & Express.js
-* **Base de Datos:** MongoDB (Local Community Server)
-* **Gestión de Versiones:** Git & GitHub
+Este repositorio contiene la solución técnica y arquitectónica de la plataforma "Perfumería Violeta", desarrollada bajo el stack MERN (MongoDB, Express, React, Node.js). El proyecto demuestra la integración de una base de datos NoSQL, una API REST y una interfaz reactiva.
 
-## 📡 Configuración de Red e Integración
-Para esta fase de integración (**GA8**), el sistema ha sido configurado para operar en una red local bajo la dirección IP:
-`http://192.168.5.105`
+🛠️ 10.1 Manual de Instalación (Local)
+Para poner en marcha la arquitectura en un entorno de desarrollo, siga estos pasos basados en la configuración actual del proyecto:
 
-* **Frontend:** Puerto 3000
-* **Backend / API:** Puerto 4000
+Prerrequisitos: Asegúrese de tener instalado Node.js y MongoDB.
 
-## 📁 Estructura del Repositorio
-* `/backend`: Lógica de servidor, modelos de datos y controladores.
-* `/frontend`: Interfaz de usuario y lógica de consumo de servicios.
-    * `/build`: **Archivos Compilados** optimizados para producción.
+Descarga de Dependencias:
 
-## ⚙️ Instrucciones de Ejecución
-1. **Backend:** `cd backend && npm install && npm start`
-2. **Frontend:** `cd frontend && npm install && npm start`
+Desde la raíz, entre a la carpeta del servidor: cd backend && npm install
 
----
-**Aprendiz:** Julio César Suárez Garavito  
-**Instructor:** Elizabeth Gelves Gelves  
-**SENA - 2026**
+Desde la raíz, entre a la carpeta de la interfaz: cd frontend && npm install
+
+Configuración de Base de Datos:
+
+Verifique que el servicio de MongoDB esté activo.
+
+Configure el archivo .env en /backend con su cadena de conexión (Connection String).
+
+Ejecución:
+
+Inicie el backend: npm start (Puerto 4000).
+
+Inicie el frontend: npm start (Puerto 3000).
+
+🚀 10.2 Manual de Despliegue (Arquitectura Integrada)
+Este apartado describe el proceso para llevar la arquitectura de red local a un entorno de producción:
+
+Capa de Persistencia: Migrar la base de datos a un cluster en MongoDB Atlas.
+
+Capa de Lógica (Backend): * Desplegar el contenido de /backend en servicios como Render o Railway.
+
+Configurar variables de entorno para la URI de la base de datos en el panel del host.
+
+Capa de Interfaz (Frontend):
+
+Generar los archivos optimizados: npm run build.
+
+Desplegar la carpeta /build en Vercel o Netlify.
+
+Sincronización: Actualizar el punto de enlace (endpoint) en el frontend para conectar con la URL de producción del backend.
+
+📖 10.3 Manual Técnico de Uso
+Guía de interacción con los componentes de la arquitectura:
+
+Estructura API: * GET /api/productos: Visualización dinámica de las 132 fragancias cargadas.
+
+POST /api/productos: Registro de nuevos productos en el catálogo (Admin).
+
+DELETE /api/productos/:id: Eliminación de registros en tiempo real.
+
+Interoperabilidad: El sistema es accesible en red local mediante la IP: http://192.168.5.105:3000.
+
+Estructura de Carpetas:
+
+/backend: Modelos de Mongoose, controladores y rutas.
+
+/frontend: Componentes de React y lógica de consumo de API.
+
+Aprendiz: Julio César Suárez Garavito
+
+Instructores: Elizabeth Gelves Gelves / Julian (Técnico)
+
+SENA - 2026
