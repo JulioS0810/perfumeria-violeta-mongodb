@@ -1,7 +1,3 @@
-Perfecto, Julio. Estás en el lugar exacto (la raíz del proyecto) para aplicar la actualización. El contenido que tienes actualmente en el README.md es funcional para la GA8, pero para cumplir con la GA4 (Arquitectura de Software), debemos expandirlo con los tres manuales específicos que discutimos, manteniendo la información técnica que ya validaste.
-
-Simplemente borra todo el contenido actual de tu archivo README.md y pega esta versión mejorada. Esta versión integra tu descripción actual con los requerimientos de arquitectura:
-
 🛒 Perfumería Violeta - Documentación de Arquitectura e Integración
 Evidencias: GA8-220501096-AA1-EV01 / GA4-220501095-AA2-EV05
 
