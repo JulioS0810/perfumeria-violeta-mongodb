@@ -1,67 +1,58 @@
-🛒 Perfumería Violeta - Documentación de Arquitectura e Integración
-Evidencias: GA8-220501096-AA1-EV01 / GA4-220501095-AA2-EV05
+# 🛒 Perfumería Violeta - Documentación de Arquitectura e Integración
 
-Este repositorio contiene la solución técnica y arquitectónica de la plataforma "Perfumería Violeta", desarrollada bajo el stack MERN (MongoDB, Express, React, Node.js). El proyecto demuestra la integración de una base de datos NoSQL, una API REST y una interfaz reactiva.
+**Evidencias:** GA8-220501096-AA1-EV01 / GA4-220501095-AA2-EV05 / **GA9 (Pruebas de Software)**
 
-🛠️ 10.1 Manual de Instalación (Local)
-Para poner en marcha la arquitectura en un entorno de desarrollo, siga estos pasos basados en la configuración actual del proyecto:
+Este repositorio contiene la solución técnica y arquitectónica de la plataforma "Perfumería Violeta", desarrollada bajo el stack MERN (MongoDB, Express, React, Node.js). El proyecto demuestra la integración de una base de datos NoSQL, una API REST robusta y una interfaz reactiva.
 
-Prerrequisitos: Asegúrese de tener instalado Node.js y MongoDB.
+## 🛠️ 10.1 Manual de Instalación (Local)
 
-Descarga de Dependencias:
+Para poner en marcha la arquitectura en un entorno de desarrollo, siga estos pasos:
 
-Desde la raíz, entre a la carpeta del servidor: cd backend && npm install
+1. **Prerrequisitos:** Asegúrese de tener instalado Node.js y MongoDB.
+2. **Descarga de Dependencias:**
+   - Carpeta Servidor: `cd backend && npm install`
+   - Carpeta Interfaz: `cd frontend && npm install`
+3. **Configuración de Base de Datos:**
+   - Verifique que el servicio de MongoDB esté activo localmente.
+   - Configure el archivo `.env` en `/backend` con su `MONGO_URI`.
+4. **Ejecución:**
+   - Inicie el backend: `node index.js` (Puerto 4000).
+   - Inicie el frontend: `npm start` (Puerto 3000).
 
-Desde la raíz, entre a la carpeta de la interfaz: cd frontend && npm install
+## 🚀 10.2 Manual de Despliegue
 
-Configuración de Base de Datos:
+Proceso para llevar la arquitectura a un entorno de producción:
 
-Verifique que el servicio de MongoDB esté activo.
+- **Persistencia:** Migrar a un cluster en MongoDB Atlas.
+- **Backend:** Desplegar `/backend` en Render o Railway, configurando variables de entorno.
+- **Frontend:** Generar build optimizado (`npm run build`) y desplegar en Vercel o Netlify.
 
-Configure el archivo .env en /backend con su cadena de conexión (Connection String).
+## 📖 10.3 Manual Técnico de Uso (API Endpoints)
 
-Ejecución:
+Interacción con los componentes de la arquitectura actualizados para la fase de pruebas GA9:
 
-Inicie el backend: npm start (Puerto 4000).
+### Módulo de Productos
 
-Inicie el frontend: npm start (Puerto 3000).
+- `GET /api/productos`: Visualización dinámica de fragancias.
+- `POST /api/productos`: Registro de nuevos productos (Admin).
+- `DELETE /api/productos/:id`: Eliminación de registros.
 
-🚀 10.2 Manual de Despliegue (Arquitectura Integrada)
-Este apartado describe el proceso para llevar la arquitectura de red local a un entorno de producción:
+### Módulo de Usuarios (CRUD Completo - GA9)
 
-Capa de Persistencia: Migrar la base de datos a un cluster en MongoDB Atlas.
+- `GET /api/usuarios`: Lista todos los usuarios registrados.
+- `POST /api/usuarios`: Registro con encriptación `bcryptjs`.
+- `PUT /api/usuarios/:id`: Actualización total de datos de usuario.
+- `PATCH /api/usuarios/:id`: Actualización parcial (ej. cambio de roles/perfiles).
+- `DELETE /api/usuarios/:id`: Eliminación definitiva de cuenta.
+- `HEAD /api/usuarios`: Verificación de disponibilidad del endpoint.
 
-Capa de Lógica (Backend): * Desplegar el contenido de /backend en servicios como Render o Railway.
+## 📂 Estructura de Carpetas
 
-Configurar variables de entorno para la URI de la base de datos en el panel del host.
+- `/backend`: Modelos de Mongoose, controladores con lógica de negocio y rutas REST.
+- `/frontend`: Componentes de React y lógica de consumo de API (Hooks/Context).
 
-Capa de Interfaz (Frontend):
+---
 
-Generar los archivos optimizados: npm run build.
-
-Desplegar la carpeta /build en Vercel o Netlify.
-
-Sincronización: Actualizar el punto de enlace (endpoint) en el frontend para conectar con la URL de producción del backend.
-
-📖 10.3 Manual Técnico de Uso
-Guía de interacción con los componentes de la arquitectura:
-
-Estructura API: * GET /api/productos: Visualización dinámica de las 132 fragancias cargadas.
-
-POST /api/productos: Registro de nuevos productos en el catálogo (Admin).
-
-DELETE /api/productos/:id: Eliminación de registros en tiempo real.
-
-Interoperabilidad: El sistema es accesible en red local mediante la IP: http://192.168.5.105:3000.
-
-Estructura de Carpetas:
-
-/backend: Modelos de Mongoose, controladores y rutas.
-
-/frontend: Componentes de React y lógica de consumo de API.
-
-Aprendiz: Julio César Suárez Garavito
-
-Instructores: Elizabeth Gelves Gelves / Julian (Técnico)
-
-SENA - 2026
+**Aprendiz:** Julio César Suárez  
+**Instructora:** Elizabeth Gelves Gelves  
+**SENA - ADSO - 2026**
