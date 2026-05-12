@@ -12,9 +12,8 @@ const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de contrase
 exports.obtenerUsuarios = async (req, res) => {
     try {
         // Traemos todos los registros de la colección 'usuarios'
-        // .sort({ creado: -1 }) hace que los más nuevos aparezcan primero (como en el video)
-        const usuarios = await Usuario.find().sort({ creado: -1 });
-        
+        // .sort({ fechaCreacion: -1 }) asegura que los más nuevos aparezcan primero
+        const usuarios = await Usuario.find().sort({ fechaCreacion: -1 });
         res.json(usuarios);
     } catch (error) {
         console.error("❌ Error al listar usuarios:", error);
@@ -26,36 +25,27 @@ exports.obtenerUsuarios = async (req, res) => {
 // 2. REGISTRAR USUARIO (POST)
 // ==========================================
 exports.crearUsuario = async (req, res) => {
-    // Extraemos los datos enviados desde el formulario de React
     const { email, password, nombre } = req.body;
 
     try {
-        // A. VALIDACIÓN PREVIA: Verificar que no falten datos esenciales
         if (!email || !password || !nombre) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
 
-        // B. UNICIDAD: Comprobar si el correo ya existe en MongoDB
         let usuarioExistente = await Usuario.findOne({ email });
         if (usuarioExistente) {
             return res.status(400).json({ msg: 'El correo ya está registrado' });
         }
 
-        // C. INSTANCIA: Creamos el nuevo objeto siguiendo el Modelo
         const nuevoUsuario = new Usuario(req.body);
 
-        // D. SEGURIDAD: Encriptación de contraseña (Hasing)
-        // Generamos una semilla de seguridad (salt) de 10 rondas
+        // SEGURIDAD: Hashing de contraseña
         const salt = await bcryptjs.genSalt(10);
-        // Hasheamos la clave plana para que en MongoDB sea ilegible por humanos
         nuevoUsuario.password = await bcryptjs.hash(password, salt);
 
-        // E. PERSISTENCIA: Guardamos en la base de datos
         await nuevoUsuario.save();
-        
         console.log(`✅ Nuevo usuario en MongoDB: ${email}`);
 
-        // F. LIMPIEZA: No enviamos el password de vuelta al cliente por seguridad
         const respuestaSegura = nuevoUsuario.toObject();
         delete respuestaSegura.password;
 
@@ -71,14 +61,48 @@ exports.crearUsuario = async (req, res) => {
 };
 
 // ==========================================
-// 3. ELIMINAR USUARIO (DELETE)
+// 3. ACTUALIZAR USUARIO (PUT / PATCH)
+// ==========================================
+exports.actualizarUsuario = async (req, res) => {
+    try {
+        const idUsuario = req.params.id;
+        const datosNuevos = req.body;
+
+        // Si el usuario intenta actualizar el password, debemos hashearlo de nuevo
+        if (datosNuevos.password) {
+            const salt = await bcryptjs.genSalt(10);
+            datosNuevos.password = await bcryptjs.hash(datosNuevos.password, salt);
+        }
+
+        // Buscamos y actualizamos. { new: true } devuelve el documento ya modificado.
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(
+            idUsuario,
+            { $set: datosNuevos },
+            { new: true }
+        );
+
+        if (!usuarioActualizado) {
+            return res.status(404).json({ msg: 'El usuario no existe' });
+        }
+
+        console.log(`🔄 Usuario actualizado: ${idUsuario}`);
+        res.json({
+            msg: 'Usuario actualizado correctamente en MongoDB',
+            usuario: usuarioActualizado
+        });
+
+    } catch (error) {
+        console.error("❌ Error al actualizar:", error);
+        res.status(500).json({ msg: 'Error al intentar actualizar el registro' });
+    }
+};
+
+// ==========================================
+// 4. ELIMINAR USUARIO (DELETE)
 // ==========================================
 exports.eliminarUsuario = async (req, res) => {
     try {
-        // Obtenemos el ID desde los parámetros de la URL (req.params.id)
         const idUsuario = req.params.id;
-
-        // Intentamos buscar y borrar en un solo paso
         const usuarioBorrado = await Usuario.findByIdAndDelete(idUsuario);
 
         if (!usuarioBorrado) {
