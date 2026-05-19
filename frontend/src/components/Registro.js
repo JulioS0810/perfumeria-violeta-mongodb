@@ -1,13 +1,15 @@
 // ==========================================
 // COMPONENTE: Registro.js
 // Propósito: CRUD de Usuarios (Crear, Leer, Eliminar)
+// Proyecto: Perfumería Violeta - Estandarizado a "name"
 // ==========================================
 
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 const Registro = () => {
-    const [usuario, setUsuario] = useState({ nombre: '', email: '', password: '' });
+    // 🛠️ CORRECCIÓN 1: Se estandariza el estado inicial usando "name"
+    const [usuario, setUsuario] = useState({ name: '', email: '', password: '' });
     const [listaUsuarios, setListaUsuarios] = useState([]);
 
     // Cargar la lista al entrar
@@ -31,11 +33,12 @@ const Registro = () => {
             const res = await fetch('http://localhost:4000/api/usuarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(usuario)
+                body: JSON.stringify(usuario) // Envía el objeto limpio con la clave "name"
             });
             if (res.ok) {
                 Swal.fire('¡Éxito!', 'Usuario registrado correctamente', 'success');
-                setUsuario({ nombre: '', email: '', password: '' });
+                // 🛠️ CORRECCIÓN 2: Limpieza del formulario apuntando a "name"
+                setUsuario({ name: '', email: '', password: '' });
                 obtenerUsuarios(); // Actualiza la tabla automáticamente
             }
         } catch (error) { Swal.fire('Error', 'No se pudo conectar al backend', 'error'); }
@@ -68,7 +71,16 @@ const Registro = () => {
                     <div className="card shadow border-0 p-4 rounded-4">
                         <h3 className="text-center mb-4" style={{color: '#4a148c'}}>Registro</h3>
                         <form onSubmit={handleSubmit}>
-                            <input type="text" name="nombre" className="form-control mb-3" placeholder="Nombre" value={usuario.nombre} onChange={handleChange} required />
+                            {/* 🛠️ CORRECCIÓN 3: El atributo 'name' y el 'value' ahora se vinculan de forma correcta a usuario.name */}
+                            <input 
+                                type="text" 
+                                name="name" 
+                                className="form-control mb-3" 
+                                placeholder="Nombre" 
+                                value={usuario.name} 
+                                onChange={handleChange} 
+                                required 
+                            />
                             <input type="email" name="email" className="form-control mb-3" placeholder="Email" value={usuario.email} onChange={handleChange} required />
                             <input type="password" name="password" className="form-control mb-3" placeholder="Contraseña" value={usuario.password} onChange={handleChange} required />
                             <button type="submit" className="btn btn-lg w-100 text-white" style={{backgroundColor: '#6a1b9a'}}>Guardar</button>
@@ -95,7 +107,8 @@ const Registro = () => {
                                 <tbody>
                                     {listaUsuarios.map(u => (
                                         <tr key={u._id}>
-                                            <td className="fw-bold">{u.nombre}</td>
+                                            {/* 🛠️ CORRECCIÓN 4: Mapeo dinámico leyendo la propiedad en inglés "u.name" devuelta por la API */}
+                                            <td className="fw-bold">{u.name}</td>
                                             <td>{u.email}</td>
                                             <td className="text-center">
                                                 <button onClick={() => eliminarUser(u._id)} className="btn btn-danger btn-sm">Eliminar</button>
