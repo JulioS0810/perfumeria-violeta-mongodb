@@ -25,10 +25,10 @@ exports.obtenerUsuarios = async (req, res) => {
 // 2. REGISTRAR USUARIO (POST)
 // ==========================================
 exports.crearUsuario = async (req, res) => {
-    const { email, password, nombre } = req.body;
+    const { email, password, name } = req.body;
 
     try {
-        if (!email || !password || !nombre) {
+        if (!email || !password || !name) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
 
