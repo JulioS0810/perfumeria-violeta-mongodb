@@ -25,9 +25,11 @@ exports.obtenerUsuarios = async (req, res) => {
 // 2. REGISTRAR USUARIO (POST)
 // ==========================================
 exports.crearUsuario = async (req, res) => {
+    // Estandarización de atributos a inglés ("name") en la desestructuración del cuerpo de la petición para cumplir con buenas prácticas globales de diseño de APIs REST
     const { email, password, name } = req.body;
 
     try {
+        // 🛠️ CORRECCIÓN 1: Se cambia !nombre por !name para validar correctamente el campo en inglés
         if (!email || !password || !name) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
@@ -37,6 +39,7 @@ exports.crearUsuario = async (req, res) => {
             return res.status(400).json({ msg: 'El correo ya está registrado' });
         }
 
+        // 🛠️ CORRECCIÓN 2: Mongoose mapeará directamente "name" si ya modificaste el archivo models/Usuario.js
         const nuevoUsuario = new Usuario(req.body);
 
         // SEGURIDAD: Hashing de contraseña
@@ -106,7 +109,7 @@ exports.eliminarUsuario = async (req, res) => {
         const usuarioBorrado = await Usuario.findByIdAndDelete(idUsuario);
 
         if (!usuarioBorrado) {
-            return res.status(404).json({ msg: 'El usuario no existe en la base de datos' });
+            return res.status(404).json({ msg: 'El usuario no existe in la base de datos' });
         }
 
         console.log(`🗑️ Usuario eliminado: ${idUsuario}`);
