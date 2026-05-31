@@ -1,14 +1,22 @@
 // ==========================================
 // CONTROLADOR DE PRODUCTOS (PERFUMES) - PERFUMERÍA VIOLETA
 // Gestión de inventario en la base de datos NoSQL (MongoDB)
-// Evidencia: GA8-220501096-AA1-EV02 (Módulos Integrados)
+// Evidencia: GA9-220501096-AA1-EV01 (Módulos Refactorizados)
 // ==========================================
 const Producto = require('../models/Producto');
 
-// ==========================================
-// 1. OBTENER PRODUCTOS (GET)
-// Soporta filtrado por género, marca y búsqueda por name
-// ==========================================
+/**
+ * @route   GET /api/productos
+ * @desc    Soporta filtrado por género, marca y búsqueda por name con ordenamiento alfabético
+ * @access  Public
+ * @param   {Object} req - Objeto de petición HTTP de Express
+ * @param   {Object} req.query - Parámetros de consulta (Query Params) de la URL
+ * @param   {string} [req.query.genero] - Filtro por categoría de género (Hombre/Mujer/Unisex)
+ * @param   {string} [req.query.marca] - Filtro por marca del diseñador
+ * @param   {string} [req.query.name] - Término de búsqueda parcial insensible a mayúsculas/minúsculas
+ * @param   {Object} res - Objeto de respuesta HTTP de Express
+ * @returns {Promise<void>} Retorna un estatus 200 con el arreglo de productos, o 500 si ocurre un fallo en el servidor
+ */
 exports.obtenerProductos = async (req, res) => {
     try {
         // Extraemos parámetros de consulta (Query Params) de la URL
@@ -47,10 +55,14 @@ exports.obtenerProductos = async (req, res) => {
     }
 };
 
-// ==========================================
-// 2. CREAR PRODUCTO (POST)
-// Permite el registro manual de nuevas fragancias
-// ==========================================
+/**
+ * @route   POST /api/productos
+ * @desc    Permite el registro manual de nuevas fragancias validando la integridad del payload
+ * @access  Private/Admin
+ * @param   {Object} req - Objeto de petición de Express que contiene los campos del producto en el body
+ * @param   {Object} res - Objeto de respuesta de Express para confirmar la creación del documento
+ * @returns {Promise<void>} Retorna estatus 201 con el producto guardado, o 400 por error de validación
+ */
 exports.crearProducto = async (req, res) => {
     try {
         // Validación de seguridad: Verificar que el cuerpo no esté vacío
@@ -75,10 +87,15 @@ exports.crearProducto = async (req, res) => {
     }
 };
 
-// ==========================================
-// 3. OBTENER PRODUCTO POR ID (GET)
-// Útil para la vista de "Detalle del Producto"
-// ==========================================
+/**
+ * @route   GET /api/productos/:id
+ * @desc    Busca de forma aislada un único perfume utilizando su Object ID de MongoDB
+ * @access  Public
+ * @param   {Object} req - Objeto de petición de Express que transporta los parámetros de ruta
+ * @param   {string} req.params.id - El ID hexadecimal de 24 caracteres correspondiente al producto
+ * @param   {Object} res - Objeto de respuesta de Express
+ * @returns {Promise<void>} Retorna estatus 200 con el detalle del perfume, o 404 si no se encuentra
+ */
 exports.obtenerProductoPorId = async (req, res) => {
     try {
         const producto = await Producto.findById(req.params.id);
