@@ -29,7 +29,7 @@ exports.crearUsuario = async (req, res) => {
     const { email, password, name } = req.body;
 
     try {
-        // 🛠️ CORRECCIÓN 1: Se cambia !nombre por !name para validar correctamente el campo en inglés
+        // 🛠️ CORRECCIÓN 1: Se cambia !name por !name para validar correctamente el campo en inglés
         if (!email || !password || !name) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }

@@ -30,7 +30,7 @@
     flex-grow: 1;
 }
 
-.nombre-producto {
+.name-producto {
     font-family: var(--fuente-titulo);
     font-size: 1.2rem;
     color: var(--gris-texto);

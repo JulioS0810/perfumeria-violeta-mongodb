@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
       <div className="container">
-        {/* Logo y Nombre */}
+        {/* Logo y Name */}
         <a className="navbar-brand d-flex align-items-center" href="/">
           <img 
             src="/imagenes/Logo PerfumeriaVioleta.png" 

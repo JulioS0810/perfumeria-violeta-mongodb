@@ -147,7 +147,7 @@ module.exports = conectarDB;
 const mongoose = require('mongoose');
 
 const ProductoSchema = mongoose.Schema({
-    nombre: {
+    name: {
         type: String,
         required: true,
         trim: true
@@ -192,7 +192,7 @@ const ProductoSchema = mongoose.Schema({
 module.exports = mongoose.model('Producto', ProductoSchema);const mongoose = require('mongoose');
 
 const usuarioSchema = new mongoose.Schema({
-    nombre: { 
+    name: { 
         type: String, 
         required: true, 
         trim: true 
@@ -326,7 +326,7 @@ exports.crearProducto = async (req, res) => {
         const nuevoProducto = new Producto(req.body);
         await nuevoProducto.save();
         
-        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.nombre}`);
+        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.name}`);
         res.status(201).json(nuevoProducto);
     } catch (error) {
         console.error("Error en crearProducto:", error);
@@ -365,11 +365,11 @@ exports.obtenerUsuarios = async (req, res) => {
 // ==========================================
 exports.crearUsuario = async (req, res) => {
     // Extraemos los datos enviados desde el formulario de React
-    const { email, password, nombre } = req.body;
+    const { email, password, name } = req.body;
 
     try {
         // A. VALIDACIÓN PREVIA: Verificar que no falten datos esenciales
-        if (!email || !password || !nombre) {
+        if (!email || !password || !name) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
 

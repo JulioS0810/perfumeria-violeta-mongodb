@@ -40,10 +40,10 @@ const Catalogo = () => {
                         {/* Usamos la ruta de imagen que cargamos en el seed */}
                         <img 
                             src={`http://localhost:5000${perfume.imagen}`} 
-                            alt={perfume.nombre} 
+                            alt={perfume.name} 
                             style={{ width: '100%', height: '150px', objectFit: 'contain' }}
                         />
-                        <h4 style={{ fontSize: '14px', margin: '10px 0' }}>{perfume.nombre}</h4>
+                        <h4 style={{ fontSize: '14px', margin: '10px 0' }}>{perfume.name}</h4>
                         <p style={{ color: '#666', fontSize: '12px' }}>{perfume.marca}</p>
                         <p style={{ fontWeight: 'bold', color: '#d4af37' }}>
                             ${perfume.precio.toLocaleString('es-CO')}

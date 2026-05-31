@@ -79,8 +79,8 @@ function App() {
           {!cargando ? (
             productos.map(p => {
               // Limpiamos la ruta de la imagen para que funcione localmente
-              const nombreImagen = p.imagen.split('/').pop();
-              const rutaFinal = `/imagenes/productos/${nombreImagen}`;
+              const nameImagen = p.imagen.split('/').pop();
+              const rutaFinal = `/imagenes/productos/${nameImagen}`;
 
               return (
                 <div key={p._id} className="col-xl-3 col-lg-4 col-sm-6">
@@ -90,7 +90,7 @@ function App() {
                       <img 
                         src={rutaFinal} 
                         className="card-img-top p-4" 
-                        alt={p.nombre} 
+                        alt={p.name} 
                         style={{ maxHeight: '100%', objectFit: 'contain' }}
                         onError={(e) => e.target.src = 'https://via.placeholder.com/250?text=Perfume'} 
                       />
@@ -99,7 +99,7 @@ function App() {
 
                     {/* Cuerpo de la Card */}
                     <div className="card-body text-center d-flex flex-column">
-                      <h6 className="fw-bold mb-1">{p.nombre}</h6>
+                      <h6 className="fw-bold mb-1">{p.name}</h6>
                       <p className="text-muted small mb-2">{p.marca}</p>
                       <p className="fs-5 fw-bold text-violeta mt-auto">
                         ${p.precio.toLocaleString('es-CO')}

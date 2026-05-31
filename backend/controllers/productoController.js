@@ -7,13 +7,13 @@ const Producto = require('../models/Producto');
 
 // ==========================================
 // 1. OBTENER PRODUCTOS (GET)
-// Soporta filtrado por género, marca y búsqueda por nombre
+// Soporta filtrado por género, marca y búsqueda por name
 // ==========================================
 exports.obtenerProductos = async (req, res) => {
     try {
         // Extraemos parámetros de consulta (Query Params) de la URL
         // Ejemplo: /api/productos?genero=Mujer&marca=Afnan
-        const { genero, marca, nombre } = req.query;
+        const { genero, marca, name } = req.query;
         let filtro = {};
 
         // Si el usuario filtra por género (Hombre/Mujer/Unisex)
@@ -26,13 +26,13 @@ exports.obtenerProductos = async (req, res) => {
             filtro.marca = marca;
         }
 
-        // Búsqueda por nombre (insensible a mayúsculas/minúsculas)
-        if (nombre) {
-            filtro.nombre = { $regex: nombre, $options: 'i' };
+        // Búsqueda por name (insensible a mayúsculas/minúsculas)
+        if (name) {
+            filtro.name = { $regex: name, $options: 'i' };
         }
 
         // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente
-        const productos = await Producto.find(filtro).sort({ nombre: 1 });
+        const productos = await Producto.find(filtro).sort({ name: 1 });
         
         // Log de diagnóstico para el desarrollador en la terminal
         console.log(`📡 GET /api/productos: Enviando ${productos.length} fragancias al frontend`);
@@ -64,7 +64,7 @@ exports.crearProducto = async (req, res) => {
         // Guardamos el documento en la colección de MongoDB
         const productoGuardado = await nuevoProducto.save();
         
-        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.nombre}`);
+        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.name}`);
         res.status(201).json(productoGuardado);
     } catch (error) {
         console.error("❌ Error en crearProducto:", error);

@@ -76,7 +76,7 @@ const Registro = () => {
                                 type="text" 
                                 name="name" 
                                 className="form-control mb-3" 
-                                placeholder="Nombre" 
+                                placeholder="Name" 
                                 value={usuario.name} 
                                 onChange={handleChange} 
                                 required 
@@ -99,7 +99,7 @@ const Registro = () => {
                             <table className="table table-hover">
                                 <thead className="table-light">
                                     <tr>
-                                        <th>Nombre</th>
+                                        <th>Name</th>
                                         <th>Correo</th>
                                         <th className="text-center">Acción</th>
                                     </tr>

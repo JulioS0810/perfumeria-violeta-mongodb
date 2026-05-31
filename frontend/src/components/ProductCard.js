@@ -8,12 +8,12 @@ const ProductCard = ({ producto }) => {
           <img 
             src={producto.imagen || 'https://via.placeholder.com/250'} 
             className="img-producto" 
-            alt={producto.nombre} 
+            alt={producto.name} 
           />
         </div>
         <div className="card-body-personalizado">
           <p className="marca-texto">{producto.marca}</p>
-          <h5 className="nombre-producto">{producto.nombre}</h5>
+          <h5 className="name-producto">{producto.name}</h5>
           <p className="precio-producto">${producto.precio.toLocaleString()}</p>
           <button className="btn-violeta">
             <i className="fa-solid fa-plus me-2"></i>
