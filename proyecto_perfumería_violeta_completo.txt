@@ -342,7 +342,7 @@ exports.crearProducto = async (req, res) => {
 // ==========================================
 
 const Usuario = require('../models/Usuario');
-const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de contraseñas
+const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de passwords
 
 // ==========================================
 // 1. OBTENER USUARIOS (GET)
@@ -382,7 +382,7 @@ exports.crearUsuario = async (req, res) => {
         // C. INSTANCIA: Creamos el nuevo objeto siguiendo el Modelo
         const nuevoUsuario = new Usuario(req.body);
 
-        // D. SEGURIDAD: Encriptación de contraseña (Hasing)
+        // D. SEGURIDAD: Encriptación de password (Hasing)
         // Generamos una semilla de seguridad (salt) de 10 rondas
         const salt = await bcryptjs.genSalt(10);
         // Hasheamos la clave plana para que en MongoDB sea ilegible por humanos

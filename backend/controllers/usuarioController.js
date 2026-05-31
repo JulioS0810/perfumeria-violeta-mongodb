@@ -4,7 +4,7 @@
 // ==========================================
 
 const Usuario = require('../models/Usuario');
-const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de contraseñas
+const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de passwords
 
 // ==========================================
 // 1. OBTENER USUARIOS (GET)
@@ -42,7 +42,7 @@ exports.crearUsuario = async (req, res) => {
         // 🛠️ CORRECCIÓN 2: Mongoose mapeará directamente "name" si ya modificaste el archivo models/Usuario.js
         const nuevoUsuario = new Usuario(req.body);
 
-        // SEGURIDAD: Hashing de contraseña
+        // SEGURIDAD: Hashing de password
         const salt = await bcryptjs.genSalt(10);
         nuevoUsuario.password = await bcryptjs.hash(password, salt);
 

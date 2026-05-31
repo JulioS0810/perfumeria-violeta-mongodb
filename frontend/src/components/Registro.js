@@ -82,7 +82,7 @@ const Registro = () => {
                                 required 
                             />
                             <input type="email" name="email" className="form-control mb-3" placeholder="Email" value={usuario.email} onChange={handleChange} required />
-                            <input type="password" name="password" className="form-control mb-3" placeholder="Contraseña" value={usuario.password} onChange={handleChange} required />
+                            <input type="password" name="password" className="form-control mb-3" placeholder="Password" value={usuario.password} onChange={handleChange} required />
                             <button type="submit" className="btn btn-lg w-100 text-white" style={{backgroundColor: '#6a1b9a'}}>Guardar</button>
                         </form>
                     </div>
