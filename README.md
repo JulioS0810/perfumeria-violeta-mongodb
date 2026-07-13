@@ -10,7 +10,29 @@ Este repositorio contiene la solución técnica y arquitectónica de la platafor
 
 Como directriz de seguridad y optimización para la gestión del entorno local, el proyecto ha migrado su ciclo de construcción y ejecución desde el ecosistema de NPM tradicional hacia **pnpm**. Esta decisión metodológica mitiga vulnerabilidades por dependencias duplicadas, garantiza la inmutabilidad del árbol de nodos mediante un almacenamiento centralizado direccionable por contenido, y optimiza los tiempos de respuesta del servidor y del framework Cypress.
 
----
+## 📂 Estructura General del Proyecto
+
+```text
+PROYECTO-PERFUMERIA-VIOLETA/
+├── backend/               # Servidor API REST (Node.js, Express, Mongoose)
+│   ├── config/            # Conexión a MongoDB (db.js)
+│   ├── controllers/       # Lógica de negocio (usuarioController y productoController)
+│   ├── models/            # Esquemas de Base de Datos NoSQL (Usuario, Producto)
+│   ├── routes/            # Endpoints de la API
+│   └── index.js           # Punto de entrada del servidor
+├── frontend/              # Interfaz de Usuario (React.js)
+│   ├── public/            # Archivos públicos y recursos estáticos
+│   └── src/
+│       ├── components/    # Componentes de la interfaz (Registro.js, etc.)
+│       ├── services/      # Conexión mediante Axios al Backend
+│       └── App.js         # Enrutamiento de las vistas del sistema
+├── cypress/               # Suite de Pruebas Automatizadas E2E (Ubicación Central)
+│   ├── e2e/               # Scripts de validación automatizada (Specs)
+│   ├── fixtures/          # Datos estáticos en formato JSON para pruebas
+│   └── support/           # Soporte y comandos personalizados globales
+└── cypress.config.js      # Archivo de configuración estructural de Cypress 
+
+```
 
 ## 🛠️ 10.1 Manual de Instalación (Local)
 
