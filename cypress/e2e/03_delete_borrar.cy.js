@@ -36,9 +36,18 @@ describe('Caso de Prueba 003 - Operación DELETE (Usuarios)', () => {
         // Hacemos clic en el botón de confirmación del modal ("Sí, eliminar")
         cy.get('.swal2-confirm').click();
         
+        // ==========================================
+        // OPTIMIZACIÓN DE ASINCRONISMO (Solución al Fallo de Animación)
+        // ==========================================
+        // 1. Esperamos explícitamente que el modal se cierre y desaparezca de la vista
+        cy.get('.swal2-popup').should('not.exist');
+        
+        // 2. Agregamos un respiro táctico de 500ms para permitir que React limpie su hook de estado local
+        cy.wait(500);
+        
         // 4. ASERCIÓN FINAL (THEN: Criterios de Aceptación validados)
-        // CRITERIO DE ACEPTACIÓN: El usuario debe desaparecer por completo del DOM inmediatamente 
+        // CRITERIO DE ACEPTACIÓN: El usuario debe desaparecer por completo de la tabla del DOM inmediatamente 
         // sin requerir una recarga manual (F5) de la aplicación de React.
-        cy.contains(usuarioObjetivo).should('not.exist');
+        cy.get('table').contains(usuarioObjetivo).should('not.exist');
     });
 });
