@@ -106,17 +106,27 @@ exports.actualizarUsuario = async (req, res) => {
 exports.eliminarUsuario = async (req, res) => {
     try {
         const idUsuario = req.params.id;
-        const usuarioBorrado = await Usuario.findByIdAndDelete(idUsuario);
 
-        if (!usuarioBorrado) {
-            return res.status(404).json({ msg: 'El usuario no existe in la base de datos' });
+        // 1. Verificación previa: Validar si el usuario existe antes de intentar borrarlo
+        const usuarioExiste = await Usuario.findById(idUsuario);
+        if (!usuarioExiste) {
+            return res.status(404).json({ msg: 'El usuario no existe en la base de datos' });
         }
 
-        console.log(`🗑️ Usuario eliminado: ${idUsuario}`);
-        res.json({ msg: 'Usuario eliminado correctamente de MongoDB' });
+        // 2. Persistencia Segura: El "await" detiene la ejecución de la API 
+        // hasta que MongoDB confirme que el documento fue removido por completo.
+        await Usuario.findByIdAndDelete(idUsuario);
+
+        console.log(`🗑️ Usuario eliminado definitivamente de MongoDB: ${idUsuario}`);
+        
+        // 3. Respuesta HTTP Exitosa: Retornamos un estado 200 en formato JSON estandarizado
+        return res.status(200).json({ 
+            msg: 'Usuario eliminado correctamente de MongoDB',
+            id: idUsuario 
+        });
 
     } catch (error) {
-        console.error("❌ Error al eliminar:", error);
-        res.status(500).json({ msg: 'Error al intentar borrar el registro' });
+        console.error("❌ Error crítico en el controlador al eliminar:", error);
+        return res.status(500).json({ msg: 'Error interno del servidor al intentar borrar el registro' });
     }
 };
