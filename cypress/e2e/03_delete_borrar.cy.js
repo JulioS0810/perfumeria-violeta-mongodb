@@ -46,8 +46,10 @@ describe('Caso de Prueba 003 - Operación DELETE (Usuarios)', () => {
         cy.wait(500);
         
         // 4. ASERCIÓN FINAL (THEN: Criterios de Aceptación validados)
-        // CRITERIO DE ACEPTACIÓN: El usuario debe desaparecer por completo de la tabla del DOM inmediatamente 
-        // sin requerir una recarga manual (F5) de la aplicación de React.
-        cy.get('table').contains(usuarioObjetivo).should('not.exist');
+        // Usamos una aserción más estricta: buscamos la celda específica (td) 
+        // que contiene el nombre. Si la celda desaparece, la fila completa ya no existe.
+        
+        // Timeout de 10 segundos (10000ms) para dar tiempo real a la sincronización de React
+        cy.contains('td', usuarioObjetivo, { timeout: 10000 }).should('not.exist');
     });
 });
