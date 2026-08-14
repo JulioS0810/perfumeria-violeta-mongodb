@@ -11,9 +11,18 @@ const bcryptjs = require('bcryptjs'); // Necesario para la seguridad de password
 // ==========================================
 exports.obtenerUsuarios = async (req, res) => {
     try {
-        // Traemos todos los registros de la colección 'usuarios'
-        // .sort({ fechaCreacion: -1 }) asegura que los más nuevos aparezcan primero
-        const usuarios = await Usuario.find().sort({ fechaCreacion: -1 });
+        // Capturamos el parámetro 'nombre' que envías desde los Query Params de Postman
+        const { nombre } = req.query;
+
+        let usuarios;
+        if (nombre) {
+            // Si envían un nombre, filtramos usando una expresión regular (case-insensitive para que no distinga entre mayúsculas y minúsculas)
+            usuarios = await Usuario.find({ name: new RegExp(nombre, 'i') }).sort({ fechaCreacion: -1 });
+        } else {
+            // Si no envían ningún parámetro, trae todos los registros como antes
+            usuarios = await Usuario.find().sort({ fechaCreacion: -1 });
+        }
+
         res.json(usuarios);
     } catch (error) {
         console.error("❌ Error al listar usuarios:", error);
