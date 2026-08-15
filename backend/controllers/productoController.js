@@ -40,7 +40,7 @@ exports.obtenerProductos = async (req, res) => {
         }
 
         // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente
-        const productos = await Producto.find(filtro).sort({ name: 1 });
+        const productos = await Producto.find(filtro).sort({ nombre: 1 });
         
         // Log de diagnóstico para el desarrollador en la terminal
         console.log(`📡 GET /api/productos: Enviando ${productos.length} fragancias al frontend`);
