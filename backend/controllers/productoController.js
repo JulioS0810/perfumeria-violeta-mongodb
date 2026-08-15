@@ -7,22 +7,21 @@ const Producto = require('../models/Producto');
 
 /**
  * @route   GET /api/productos
- * @desc    Soporta filtrado por género, marca y búsqueda por nombre/name con ordenamiento alfabético
+ * @desc    Soporta filtrado por género, marca y búsqueda por nombre con ordenamiento alfabético
  * @access  Public
  * @param   {Object} req - Objeto de petición HTTP de Express
  * @param   {Object} req.query - Parámetros de consulta (Query Params) de la URL
  * @param   {string} [req.query.genero] - Filtro por categoría de género (Hombre/Mujer/Unisex)
  * @param   {string} [req.query.marca] - Filtro por marca del diseñador
- * @param   {string} [req.query.name] - Término de búsqueda parcial en inglés
  * @param   {string} [req.query.nombre] - Término de búsqueda parcial en español
  * @param   {Object} res - Objeto de respuesta HTTP de Express
  * @returns {Promise<void>} Retorna un estatus 200 con el arreglo de productos, o 500 si ocurre un fallo en el servidor
  */
 exports.obtenerProductos = async (req, res) => {
     try {
-        // Extraemos parámetros de consulta (Query Params) de la URL
-        // Ejemplo: /api/productos?genero=Mujer&marca=Afnan
-        const { genero, marca, name } = req.query;
+        // Extraemos parámetros de consulta (Query Params) de la URL usando la nomenclatura en español
+        // Ejemplo: /api/productos?genero=Mujer&marca=Lattafa&nombre=Yara
+        const { genero, marca, nombre } = req.query;
         let filtro = {};
 
         // Si el usuario filtra por género (Hombre/Mujer/Unisex)
@@ -35,12 +34,12 @@ exports.obtenerProductos = async (req, res) => {
             filtro.marca = marca;
         }
 
-        // Validamos que 'name' tenga contenido real antes de agregarlo al filtro del campo 'nombre'
-        if (name && typeof name === 'string' && name.trim() !== '') {
-            filtro.nombre = { $regex: name.trim(), $options: 'i' };
+        // Validamos que 'nombre' tenga contenido real antes de agregarlo al filtro de la base de datos
+        if (nombre && typeof nombre === 'string' && nombre.trim() !== '') {
+            filtro.nombre = { $regex: nombre.trim(), $options: 'i' };
         }
 
-        // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente
+        // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente por el campo nombre
         const productos = await Producto.find(filtro).sort({ nombre: 1 });
         
         // Log de diagnóstico para el desarrollador en la terminal
@@ -77,7 +76,7 @@ exports.crearProducto = async (req, res) => {
         // Guardamos el documento en la colección de MongoDB
         const productoGuardado = await nuevoProducto.save();
         
-        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.name}`);
+        console.log(`✨ Producto creado exitosamente: ${nuevoProducto.nombre}`);
         res.status(201).json(productoGuardado);
     } catch (error) {
         console.error("❌ Error en crearProducto:", error);
