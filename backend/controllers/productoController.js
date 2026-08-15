@@ -36,7 +36,7 @@ exports.obtenerProductos = async (req, res) => {
 
         // Búsqueda por name (insensible a mayúsculas/minúsculas)
         if (name) {
-            filtro.name = { $regex: name, $options: 'i' };
+            filtro.nombre = { $regex: name, $options: 'i' };
         }
 
         // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente
