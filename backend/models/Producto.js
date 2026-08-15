@@ -1,3 +1,8 @@
+// ==========================================
+// MODELO DE PRODUCTO (PERFUMES) - PERFUMERÍA VIOLETA
+// Esquema de la base de datos NoSQL (MongoDB)
+// Evidencia: GA9-220501096-AA1-EV01 (Módulos Refactorizados)
+// ==========================================
 const mongoose = require('mongoose');
 
 const ProductoSchema = mongoose.Schema({
@@ -30,7 +35,7 @@ const ProductoSchema = mongoose.Schema({
         required: true
     },
     imagen: {
-        type: String, // Aquí guardaremos la URL de la imagen
+        type: String, // URL de la imagen del producto
         default: 'https://via.placeholder.com/300'
     },
     stock: {
@@ -39,7 +44,7 @@ const ProductoSchema = mongoose.Schema({
     },
     fechaCreacion: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 });
 
