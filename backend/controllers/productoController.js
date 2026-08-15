@@ -35,7 +35,7 @@ exports.obtenerProductos = async (req, res) => {
         }
 
         // Búsqueda por name (insensible a mayúsculas/minúsculas)
-        if (name) {
+        if (name && name.trim() !== '') {
             filtro.nombre = { $regex: name, $options: 'i' };
         }
 
