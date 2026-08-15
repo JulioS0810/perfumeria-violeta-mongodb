@@ -7,13 +7,14 @@ const Producto = require('../models/Producto');
 
 /**
  * @route   GET /api/productos
- * @desc    Soporta filtrado por género, marca y búsqueda por name con ordenamiento alfabético
+ * @desc    Soporta filtrado por género, marca y búsqueda por nombre/name con ordenamiento alfabético
  * @access  Public
  * @param   {Object} req - Objeto de petición HTTP de Express
  * @param   {Object} req.query - Parámetros de consulta (Query Params) de la URL
  * @param   {string} [req.query.genero] - Filtro por categoría de género (Hombre/Mujer/Unisex)
  * @param   {string} [req.query.marca] - Filtro por marca del diseñador
- * @param   {string} [req.query.name] - Término de búsqueda parcial insensible a mayúsculas/minúsculas
+ * @param   {string} [req.query.name] - Término de búsqueda parcial en inglés
+ * @param   {string} [req.query.nombre] - Término de búsqueda parcial en español
  * @param   {Object} res - Objeto de respuesta HTTP de Express
  * @returns {Promise<void>} Retorna un estatus 200 con el arreglo de productos, o 500 si ocurre un fallo en el servidor
  */
@@ -34,9 +35,9 @@ exports.obtenerProductos = async (req, res) => {
             filtro.marca = marca;
         }
 
-        // Búsqueda por name (insensible a mayúsculas/minúsculas)
-        if (name && name.trim() !== '') {
-            filtro.nombre = { $regex: name, $options: 'i' };
+        // Validamos que 'name' tenga contenido real antes de agregarlo al filtro del campo 'nombre'
+        if (name && typeof name === 'string' && name.trim() !== '') {
+            filtro.nombre = { $regex: name.trim(), $options: 'i' };
         }
 
         // Buscamos en MongoDB aplicando el filtro y ordenando alfabéticamente
