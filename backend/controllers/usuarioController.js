@@ -34,24 +34,25 @@ exports.obtenerUsuarios = async (req, res) => {
 // 2. REGISTRAR USUARIO (POST)
 // ==========================================
 exports.crearUsuario = async (req, res) => {
-    // Estandarización de atributos a inglés ("name") en la desestructuración del cuerpo de la petición para cumplir con buenas prácticas globales de diseño de APIs REST
-    const { email, password, name } = req.body;
+    const { email, password, name, rol } = req.body;
 
     try {
-        // 🛠️ CORRECCIÓN 1: Se cambia !name por !name para validar correctamente el campo en inglés
         if (!email || !password || !name) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
 
-        let usuarioExistente = await Usuario.findOne({ email });
+        const usuarioExistente = await Usuario.findOne({ email });
         if (usuarioExistente) {
             return res.status(400).json({ msg: 'El correo ya está registrado' });
         }
 
-        // 🛠️ CORRECCIÓN 2: Mongoose mapeará directamente "name" si ya modificaste el archivo models/Usuario.js
-        const nuevoUsuario = new Usuario(req.body);
+        const nuevoUsuario = new Usuario({
+            name,
+            email,
+            password,
+            rol: rol || 'cliente'
+        });
 
-        // SEGURIDAD: Hashing de password
         const salt = await bcryptjs.genSalt(10);
         nuevoUsuario.password = await bcryptjs.hash(password, salt);
 
@@ -69,6 +70,39 @@ exports.crearUsuario = async (req, res) => {
     } catch (error) {
         console.error("❌ Error en el registro:", error);
         res.status(500).json({ msg: 'Error interno al procesar el registro' });
+    }
+};
+
+exports.loginUsuario = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ msg: 'Email y contraseña son obligatorios' });
+        }
+
+        const usuario = await Usuario.findOne({ email }).select('+password');
+
+        if (!usuario) {
+            return res.status(401).json({ msg: 'Credenciales inválidas' });
+        }
+
+        const passwordValida = await bcryptjs.compare(password, usuario.password);
+
+        if (!passwordValida) {
+            return res.status(401).json({ msg: 'Credenciales inválidas' });
+        }
+
+        const usuarioSeguro = usuario.toObject();
+        delete usuarioSeguro.password;
+
+        res.status(200).json({
+            msg: 'Inicio de sesión exitoso',
+            usuario: usuarioSeguro
+        });
+    } catch (error) {
+        console.error('❌ Error en login:', error);
+        res.status(500).json({ msg: 'Error al iniciar sesión' });
     }
 };
 

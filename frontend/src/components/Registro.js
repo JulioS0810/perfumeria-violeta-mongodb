@@ -5,9 +5,11 @@
 // ==========================================
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Registro = () => {
+    const navigate = useNavigate();
     // 🛠️ ESTADO LOCAL: Datos del formulario estandarizados con las claves del backend ("name")
     const [usuario, setUsuario] = useState({ name: '', email: '', password: '' });
     // 🛠️ ESTADO LOCAL: Almacena el array de usuarios devuelto por MongoDB para pintar la tabla
@@ -52,14 +54,19 @@ const Registro = () => {
             } 
             // CASO ERROR CONTROLADO: El backend rechaza la petición (ej: Status 400 - Correo Duplicado)
             else {
-                const errorData = await res.json(); // Extrae el JSON de error enviado por Node.js {"msg": "..."}
-                
-                // Renderiza un SweetAlert de advertencia (Warning) con el mensaje exacto de la API
+                const errorData = await res.json();
+
+                const mensaje = errorData.msg || 'El usuario ya se encuentra registrado en el sistema.';
+
                 Swal.fire({
                     icon: 'warning',
                     title: 'No se pudo registrar',
-                    text: errorData.msg || 'El usuario ya se encuentra registrado en el sistema.',
-                    confirmButtonColor: '#6a1b9a' // Color corporativo alineado con Perfumería Violeta
+                    text: mensaje,
+                    confirmButtonColor: '#6a1b9a'
+                }).then(() => {
+                    if (mensaje.toLowerCase().includes('ya está registrado') || mensaje.toLowerCase().includes('ya se encuentra registrado')) {
+                        navigate('/login');
+                    }
                 });
             }
         } catch (error) { 
@@ -142,6 +149,17 @@ const Registro = () => {
                             <button type="submit" className="btn btn-lg w-100 text-white" style={{backgroundColor: '#6a1b9a'}}>
                                 Guardar
                             </button>
+
+                            <div className="text-center mt-3">
+                                <span className="text-muted">¿Ya tienes cuenta?</span>
+                                <button
+                                    type="button"
+                                    className="btn btn-link text-violeta fw-bold p-0 ms-2"
+                                    onClick={() => navigate('/login')}
+                                >
+                                    Inicia sesión
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

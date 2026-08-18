@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ carrito = [], usuario = null, onCerrarSesion }) => {
+  const totalItems = carrito.reduce((total, item) => total + Number(item.cantidad || 0), 0);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
       <div className="container">
@@ -37,25 +40,44 @@ const Navbar = () => {
               <a className="nav-link px-3" href="/">Inicio</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link px-3" href="#catalogo">Catálogo</a>
+              <Link className="nav-link px-3" to="/#catalogo">Catálogo</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link px-3" href="/nosotros">Nosotros</a>
+              <Link className="nav-link px-3" to="/nosotros">Nosotros</Link>
             </li>
             
             {/* Iconos de Acción */}
             <li className="nav-item ms-lg-3">
-              <a className="nav-link position-relative" href="/carrito">
+              <Link className="nav-link position-relative" to="/carrito">
                 <i className="fa-solid fa-bag-shopping fs-5"></i>
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  0
+                  {totalItems}
                 </span>
-              </a>
+              </Link>
             </li>
             <li className="nav-item ms-lg-2">
-              <a className="btn btn-violeta ms-lg-3 px-4" href="/login">
-                <i className="fa-solid fa-user me-2"></i>Ingresar
-              </a>
+              {usuario ? (
+                <div className="d-flex align-items-center gap-2 ms-lg-3">
+                  {['propietario', 'admin', 'empleado'].includes(usuario.rol) && (
+                    <Link className="btn btn-outline-violeta btn-sm" to="/admin">
+                      Admin
+                    </Link>
+                  )}
+                  <span className="fw-bold text-violeta small text-uppercase">
+                    {usuario.name}
+                  </span>
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={onCerrarSesion}
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              ) : (
+                <Link className="btn btn-violeta ms-lg-3 px-4" to="/login">
+                  <i className="fa-solid fa-user me-2"></i>Ingresar
+                </Link>
+              )}
             </li>
           </ul>
         </div>

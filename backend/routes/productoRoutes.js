@@ -19,13 +19,43 @@ const productoControllers = require('../controllers/productoController');
 router.get('/', productoControllers.obtenerProductos);
 
 // ==========================================
-// 2. RUTA: CREAR PRODUCTO (POST)
+// 2. RUTA: OBTENER PRODUCTO POR ID (GET)
+// ==========================================
+/**
+ * @route   GET /api/productos/:id
+ * @desc    Obtiene un perfume específico por su ID.
+ * @access  Público
+ */
+router.get('/:id', productoControllers.obtenerProductoPorId);
+
+// ==========================================
+// 3. RUTA: CREAR PRODUCTO (POST)
 // ==========================================
 /**
  * @route   POST /api/productos
  * @desc    Registra un nuevo perfume en la colección 'productos'.
- * @access  Público
+ * @access  Privado/Admin
  */
 router.post('/', productoControllers.crearProducto);
+
+// ==========================================
+// 4. RUTA: ACTUALIZAR PRODUCTO (PUT)
+// ==========================================
+/**
+ * @route   PUT /api/productos/:id
+ * @desc    Actualiza un perfume existente.
+ * @access  Privado/Admin
+ */
+router.put('/:id', productoControllers.actualizarProducto);
+
+// ==========================================
+// 5. RUTA: ELIMINAR PRODUCTO (DELETE)
+// ==========================================
+/**
+ * @route   DELETE /api/productos/:id
+ * @desc    Elimina un perfume de la colección.
+ * @access  Privado/Admin
+ */
+router.delete('/:id', productoControllers.eliminarProducto);
 
 module.exports = router;

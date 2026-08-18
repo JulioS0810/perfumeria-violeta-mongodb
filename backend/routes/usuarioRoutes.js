@@ -9,6 +9,8 @@ const router = express.Router();
 // Importamos el controlador con la lógica de negocio y persistencia
 const usuarioController = require('../controllers/usuarioController');
 
+console.log('✅ Rutas de usuarios cargadas correctamente');
+
 // ==========================================
 // 1. RUTA: OBTENER TODOS LOS USUARIOS (GET / HEAD)
 // ==========================================
@@ -34,6 +36,18 @@ router.head('/', usuarioController.obtenerUsuarios);
  * @access  Público
  */
 router.post('/', usuarioController.crearUsuario);
+
+// ==========================================
+// 2b. RUTA: LOGIN USUARIO
+// ==========================================
+/**
+ * @route   POST /api/usuarios/login
+ * @desc    Autentica un usuario con email y contraseña.
+ * @access  Público
+ */
+console.log('🔐 Registrando ruta POST /login');
+router.post('/login', usuarioController.loginUsuario);
+console.log('✅ Ruta POST /login registrada exitosamente');
 
 // ==========================================
 // 3. RUTA: ACTUALIZAR USUARIO (PUT / PATCH)

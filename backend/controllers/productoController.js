@@ -108,3 +108,73 @@ exports.obtenerProductoPorId = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al buscar el detalle del perfume' });
     }
 };
+
+/**
+ * @route   PUT /api/productos/:id
+ * @desc    Actualiza un perfume existente por su ID
+ * @access  Private/Admin
+ * @param   {Object} req - Objeto de petición de Express
+ * @param   {string} req.params.id - ID del producto a actualizar
+ * @param   {Object} res - Objeto de respuesta de Express
+ * @returns {Promise<void>} Retorna estatus 200 con el producto actualizado, o 404/400 si hay error
+ */
+exports.actualizarProducto = async (req, res) => {
+    try {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.status(400).json({ mensaje: 'No se recibieron datos para actualizar' });
+        }
+
+        const productoActualizado = await Producto.findByIdAndUpdate(
+            req.params.id,
+            { $set: req.body },
+            { new: true, runValidators: true }
+        );
+
+        if (!productoActualizado) {
+            return res.status(404).json({ mensaje: 'Perfume no encontrado' });
+        }
+
+        console.log(`🔄 Producto actualizado: ${productoActualizado.nombre}`);
+        res.status(200).json({
+            mensaje: 'Producto actualizado correctamente',
+            producto: productoActualizado
+        });
+    } catch (error) {
+        console.error("❌ Error en actualizarProducto:", error);
+        res.status(400).json({
+            mensaje: 'Error al actualizar el producto',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * @route   DELETE /api/productos/:id
+ * @desc    Elimina un perfume de la base de datos por su ID
+ * @access  Private/Admin
+ * @param   {Object} req - Objeto de petición de Express
+ * @param   {string} req.params.id - ID del producto a eliminar
+ * @param   {Object} res - Objeto de respuesta de Express
+ * @returns {Promise<void>} Retorna estatus 200 si se elimina, o 404 si no existe
+ */
+exports.eliminarProducto = async (req, res) => {
+    try {
+        const productoEliminado = await Producto.findByIdAndDelete(req.params.id);
+
+        if (!productoEliminado) {
+            return res.status(404).json({ mensaje: 'Perfume no encontrado' });
+        }
+
+        console.log(`🗑️ Producto eliminado: ${productoEliminado.nombre}`);
+        res.status(200).json({
+            mensaje: 'Producto eliminado correctamente',
+            id: req.params.id
+        });
+    } catch (error) {
+        console.error("❌ Error en eliminarProducto:", error);
+        res.status(500).json({
+            mensaje: 'Error al eliminar el producto',
+            error: error.message
+        });
+    }
+};

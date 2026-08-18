@@ -59,6 +59,12 @@ app.get('/api/diagnostico', (req, res) => {
 // Enrutador para la gestión del inventario de productos
 app.use('/api/productos', require('./routes/productoRoutes'));
 
+// Enrutador para la gestión del carrito de compras
+app.use('/api/carrito', require('./routes/carritoRoutes'));
+
+// Enrutador para checkout, pedidos y confirmación de pagos
+app.use('/api/pedidos', require('./routes/pedidoRoutes'));
+
 // Enrutador para la gestión y registro de usuarios (Usado en el video de la EV04)
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
 

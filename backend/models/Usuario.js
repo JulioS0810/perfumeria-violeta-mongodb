@@ -19,7 +19,8 @@ const usuarioSchema = new mongoose.Schema({
         select: false // <--- ESTA ES LA CORRECCIÓN CLAVE
     },
     rol: { 
-        type: String, 
+        type: String,
+        enum: ['propietario', 'admin', 'empleado', 'cliente'],
         default: 'cliente' 
     },
     fechaCreacion: { 
